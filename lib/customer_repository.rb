@@ -6,7 +6,7 @@ class CustomerRepository
   include Find
   include CSV_IO
   attr_accessor :customers
-  attr_reader :file, :sales_engine
+  attr_reader :file, :sales_engine, :first_name, :last_name
 
   def initialize(file=nil, sales_engine)
     @file = file
@@ -26,12 +26,12 @@ class CustomerRepository
     find_by_num({:id => id})
   end
 
-  def find_all_by_first_name(first_name)
-    find_all_by_string_full({:first_name => first_name})
+  def find_all_by_first_name(first_name) #changed to fragment
+    find_all_by_string_fragment({:first_name => first_name})
   end
 
-  def find_all_by_last_name(last_name)
-    find_all_by_string_full({:last_name => last_name})
+  def find_all_by_last_name(last_name) #changed to fragment
+    find_all_by_string_fragment({:last_name => last_name})
   end
 
 end
