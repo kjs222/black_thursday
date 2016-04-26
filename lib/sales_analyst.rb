@@ -1,6 +1,5 @@
 require 'bigdecimal'
 require_relative 'standard_deviation'
-require 'pry'
 
 class SalesAnalyst
   include StandardDeviation
@@ -168,43 +167,45 @@ class SalesAnalyst
     end
   end
 
-  def generate_merchant_item_hashes(merchant_id)
+  def generate_most_sold_array(merchant_id)
     invoices = find_paid_invoices_by_merchant(merchant_id)
-    most_sold_hash = {}
-    best_item_hash = {}
+    most_sold_hash = Hash.new(0)
+
     invoices.each do |invoice|
       sales_engine.invoice_items.find_all_by_invoice_id(invoice.id).each do |invoice_item|
-        if !most_sold_hash[invoice_item.item_id]
-          most_sold_hash[invoice_item.item_id] = invoice_item.quantity
-        else
-          most_sold_hash[invoice_item.item_id] = most_sold_hash[invoice_item.item_id] + invoice_item.quantity
-        end
-        if !best_item_hash[invoice_item.item_id]
-          best_item_hash[invoice_item.item_id] = invoice_item.quantity * invoice_item.unit_price
-        else
-          best_item_hash[invoice_item.item_id] = best_item_hash[invoice_item.item_id] + invoice_item.quantity * invoice_item.unit_price
-        end
+        most_sold_hash[invoice_item.item_id] += invoice_item.quantity
       end
     end
 
     sorted_array = most_sold_hash.sort_by {|k, v| v}.reverse
     most_sold = sorted_array.find_all {|pair| pair[1] == sorted_array[0][1]}
+  end
+
+  def generate_best_item(merchant_id)
+    invoices = find_paid_invoices_by_merchant(merchant_id)
+    best_item_hash = Hash.new(0)
+
+    invoices.each do |invoice|
+
+      sales_engine.invoice_items.find_all_by_invoice_id(invoice.id).each do |invoice_item|
+        best_item_hash[invoice_item.item_id] += invoice_item.quantity * invoice_item.unit_price
+      end
+
+    end
 
     best_item = best_item_hash.sort_by {|k, v| v}.reverse[0][0]
-    return most_sold, best_item
   end
 
 #
   def most_sold_item_for_merchant(merchant_id)
-    most_sold, best_item = generate_merchant_item_hashes(merchant_id)
-
+    most_sold = generate_most_sold_array(merchant_id)
     most_sold.map do |item_id|
       sales_engine.items.find_by_id(item_id[0])
     end
   end
 
   def best_item_for_merchant(merchant_id)
-    most_sold, best_item = generate_merchant_item_hashes(merchant_id)
+    best_item = generate_best_item(merchant_id)
     sales_engine.items.find_by_id(best_item)
   end
 
