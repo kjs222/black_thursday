@@ -1,6 +1,7 @@
 require 'bigdecimal'
 require_relative 'standard_deviation'
 require 'time'
+require 'pry'
 
 class SalesAnalyst
   include StandardDeviation
@@ -133,15 +134,19 @@ class SalesAnalyst
   end
 
   def most_sold_item_for_merchant(merchant_id)
-    most_sold = generate_most_sold_array(merchant_id)
-    most_sold.map do |item_id|
-      sales_engine.items.find_by_id(item_id[0])
+    hash = generate_item_hash_for_merchant(merchant_id)
+    top = hash.max_by {|item, values| values[:quantity]}
+    quantity = top[1][:quantity]
+    most_sold = hash.find_all {|k, v| v[:quantity] == quantity}
+    most_sold.map do |item|
+      sales_engine.items.find_by_id(item[0])
     end
   end
 
   def best_item_for_merchant(merchant_id)
-    best_item = generate_best_item(merchant_id)
-    sales_engine.items.find_by_id(best_item)
+    hash = generate_item_hash_for_merchant(merchant_id)
+    best_id = hash.max_by {|item, values| values[:revenue]}
+    sales_engine.items.find_by_id(best_id[0])
   end
 
   #=========HELPER METHODS===============
@@ -225,33 +230,22 @@ class SalesAnalyst
     end
   end
 
-  def generate_most_sold_array(merchant_id)
-    invoices = find_paid_invoices_by_merchant(merchant_id)
-    most_sold_hash = Hash.new(0)
-
-    invoices.each do |invoice|
-      sales_engine.invoice_items.find_all_by_invoice_id(invoice.id).each do |invoice_item|
-        most_sold_hash[invoice_item.item_id] += invoice_item.quantity
-      end
+  def generate_item_hash_for_invoice(invoice_id)
+    all_items = sales_engine.invoice_items.find_all_by_invoice_id(invoice_id)
+    all_items.map do |invoice_item|
+      {invoice_item.item_id => {:quantity => invoice_item.quantity, :revenue => invoice_item.unit_price * invoice_item.quantity}}
     end
-
-    sorted_array = most_sold_hash.sort_by {|k, v| v}.reverse
-    most_sold = sorted_array.find_all {|pair| pair[1] == sorted_array[0][1]}
   end
 
-  def generate_best_item(merchant_id)
-    invoices = find_paid_invoices_by_merchant(merchant_id)
-    best_item_hash = Hash.new(0)
-
-    invoices.each do |invoice|
-
-      sales_engine.invoice_items.find_all_by_invoice_id(invoice.id).each do |invoice_item|
-        best_item_hash[invoice_item.item_id] += invoice_item.quantity * invoice_item.unit_price
+  def generate_item_hash_for_merchant(merchant_id)
+    cuml_array = find_paid_invoices_by_merchant(merchant_id).map do |invoice|
+      generate_item_hash_for_invoice(invoice.id)
+    end.flatten
+    cuml_array.reduce({}) do |items, stats|
+      items.merge(stats) do |_, prev_hsh, new_hsh|
+        prev_hsh.merge(new_hsh) {|_, prev_val, new_val| prev_val + new_val }
       end
-
     end
-
-    best_item = best_item_hash.sort_by {|k, v| v}.reverse[0][0]
   end
 
 end
