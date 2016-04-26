@@ -27,7 +27,9 @@ class Invoice
   end
 
   def items
-    sales_engine.invoice_items.find_all_by_invoice_id(id)
+    inv_items = sales_engine.invoice_items.find_all_by_invoice_id(id)
+    item_ids = inv_items.map {|inv_item| inv_item.item_id}
+    item_ids.map {|item_id| sales_engine.items.find_by_id(item_id)}
   end
 
   def transactions
@@ -49,8 +51,7 @@ class Invoice
       items = sales_engine.invoice_items.find_all_by_invoice_id(id)
       result = items.reduce(0) do |total, item|
         total + item.unit_price * item.quantity
-      end
-      (BigDecimal.new(result)/BigDecimal.new(100)).round(2)
+      end.round(2)
     end
   end
 

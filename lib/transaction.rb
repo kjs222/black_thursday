@@ -1,6 +1,6 @@
 class Transaction
   attr_reader :id, :invoice_id, :credit_card_number,
-              :credit_card_expiration_date, :result
+              :credit_card_expiration_date, :result, :sales_engine
 
   def initialize(data, sales_engine)
     @id = data[:id].to_i
@@ -25,5 +25,10 @@ class Transaction
     Time.parse(@updated_at)
   end
 
-  
+  def invoice
+    sales_engine.invoices.find_by_id(invoice_id)
+  end
+
+
+
 end

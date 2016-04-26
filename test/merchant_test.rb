@@ -10,9 +10,13 @@ class MerchantTest < Minitest::Test
     @se = SalesEngine.from_csv({
       :items     => "./data/small_items.csv",
       :merchants => "./data/small_merchants.csv",
+      :invoice_items => "./data/small_invoice_items.csv",
+      :customers => "./data/small_customers.csv",
+      :transactions => "./data/small_transactions.csv",
       :invoices  => "./data/small_invoices.csv"})
     @se.items
     @se.invoices
+    @se.customers
     @merch_repo = @se.merchants
     @merchant = @merch_repo.merchants[8]
   end
@@ -39,6 +43,18 @@ class MerchantTest < Minitest::Test
 
   def test_we_can_retrieve_correct_secondary_invoice
     assert_equal 4, merchant.invoices[1].id
+  end
+
+  def test_we_can_retrieve_customer_objects
+    assert_equal Customer, merchant.customers[0].class
+  end
+
+  def test_we_can_retrieve_customer_objects_in_array
+    assert_equal Array, merchant.customers.class
+  end
+
+  def test_we_can_retrieve_correct_customer
+    assert_equal "Joey", merchant.customers[0].first_name
   end
 
 

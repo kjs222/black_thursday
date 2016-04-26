@@ -103,7 +103,7 @@ class SalesAnalystTest < Minitest::Test
   end
 
   def test_standard_deviation_can_calc_for_invoices
-    assert_equal 2.31, sa.average_invoices_per_merchant_standard_deviation
+    assert_equal 1.53,  sa.average_invoices_per_merchant_standard_deviation
   end
 
   def test_we_can_find_top_performing_merchants
@@ -137,184 +137,133 @@ class SalesAnalystTest < Minitest::Test
   end
 
   def test_we_can_hash_by_invoice_status
-    assert_equal 3, sa.group_invoices_status[:shipped].length
+    assert_equal 4, sa.group_invoices_status[:shipped].length
   end
 
   def test_we_can_percentage_of_invoices_with_given_status
-    assert_equal 57.14, sa.invoice_status(:pending)
-    assert_equal 28.57, sa.invoice_status(:shipped)
+    assert_equal 57.14, sa.invoice_status(:shipped)
+    assert_equal 28.57, sa.invoice_status(:pending)
     assert_equal 14.29, sa.invoice_status(:returned)
   end
 
-  #======================
-
-  ##TOTAL REV BY DATE
-
   def test_total_revenue_by_date_returns_BD
-    skip
     assert_equal BigDecimal, sa.total_revenue_by_date("2016-04-21").class
   end
 
   def test_total_revenue_by_date_returns_accurate_amount
-    skip
-    assert_equal 8.70, sa.total_revenue_by_date("2016-04-21")
-    assert_equal 61.50, sa.total_revenue_by_date("2016-04-20")
+    assert_equal 11.90, sa.total_revenue_by_date("2016-04-18")
+    assert_equal 7.75, sa.total_revenue_by_date("2016-04-19")
   end
 
   def test_total_revenue_by_date_returns_0_when_no_rev
-    skip
     assert_equal 0.00, sa.total_revenue_by_date("2016-03-21")
   end
-
 
   def test_it_finds_all_invoices_by_date
     assert_equal 4, sa.find_all_invoices_by_date("2016-04-18").length
     assert_equal 0, sa.find_all_invoices_by_date("2012-04-21").length
   end
 
-  #TOP REVENUE EARNERS
-
   def test_merchant_revenue_hash_is_correct
-    skip
-    expected = {"Merch1" => 8.70, "Merch2" => 0.95, "Merch3" => 71.50}
-    assert_equal expected, sa.generate_merchant_revenue_hash
+    assert_equal 0.95, sa.generate_merchant_revenue_hash.values[1]
+    assert_equal 71.50, sa.generate_merchant_revenue_hash.values[2]
+    assert sa.generate_merchant_revenue_hash.keys[0].name.include?("Merch1")
+
   end
 
   def test_top_revenue_earners_returns_array
-    skip
-    assert_equal Array, sa.top_revenue_earners(3)
+    assert_equal Array, sa.top_revenue_earners(3).class
   end
 
   def test_top_revenue_earners_returns_correct_list
-    skip
     assert_equal true, sa.top_revenue_earners(1)[0].name.include?("Merch3")
-    assert_equal 2,  sa.top_revenue_earners(2).length
+    assert_equal 2, sa.top_revenue_earners(2).length
   end
 
   def test_top_revenue_earners_doesnt_need_argument
-    skip
     assert_equal 3, sa.top_revenue_earners.length
   end
 
-  #MERCHANTS WITH PENDING INVOICES
+  def test_merchants_ranked_by_revenue_returns_all
+    assert_equal 3, sa.merchants_ranked_by_revenue.length
+  end
 
-  # def test_it_finds_pending_invoices
-  #   skip
-  #   assert_equal 2, sa.find_pending_invoices.length
-  #   assert_equal Invoice, sa.find_pending_invoices[0].class
-  #   assert_equal :pending, sa.find_pending_invoices[1].status
-  # end
-
+  def test_merchants_ranked_by_revenue_returns_correct_order
+    assert_equal 3, sa.merchants_ranked_by_revenue[0].id
+    assert_equal 1, sa.merchants_ranked_by_revenue[1].id
+    assert_equal 2, sa.merchants_ranked_by_revenue[2].id
+  end
 
   def test_merchants_with_pending_invoices_returns_array
-    skip
     assert_equal Array, sa.merchants_with_pending_invoices.class
   end
 
   def test_merchants_with_pending_invoices_returns_correct_list
-    skip
-    assert_equal 3, ma.merchants_with_pending_invoices[0].name.id
+    assert_equal 3, sa.merchants_with_pending_invoices[0].id
     assert_equal 1,  sa.merchants_with_pending_invoices.length
   end
 
-  #MERCHS WITH 1 ITEM
-
   def test_merchants_with_only_one_item_returns_array
-    skip
     assert_equal Array, sa.merchants_with_only_one_item.class
   end
 
   def test_merchants_with_only_one_item_returns_correct_list
-    skip
     assert_equal true, sa.merchants_with_only_one_item[0].name.include?("Merch2")
     assert_equal 1,  sa.merchants_with_only_one_item.length
   end
 
-  #ONE ITEM BY MONTH
-
   def test_merchants_with_only_one_item_in_month_returns_array
-    skip
     assert_equal Array, sa.merchants_with_only_one_item_registered_in_month("January").class
   end
 
   def test_merchants_with_only_one_item_in_month_returns_correct_list
-    skip
     assert_equal true, sa.merchants_with_only_one_item_registered_in_month("October")[0].name.include?("Merch2")
-    assert_equal 0,  sa.merchants_with_only_one_item_in_month("January").length
+    assert_equal 0,  sa.merchants_with_only_one_item_registered_in_month("January").length
   end
 
   def test_merchants_with_only_one_item_in_month_returns_empty_if_none
-    skip
-    assert_equal 0,  sa.merchants_with_only_one_item_in_month("January").length
+    assert_equal 0,  sa.merchants_with_only_one_item_registered_in_month("January").length
   end
 
-  #REV BY MERCHANT
-
   def test_revenue_by_merchant_returns_BD
-    skip
     assert_equal BigDecimal,  sa.revenue_by_merchant(3).class
   end
 
   def test_revenue_by_merchant_returns_correct_amount
-    skip
     assert_equal 71.50,  sa.revenue_by_merchant(3)
   end
 
   def test_revenue_by_merchant_returns_0_if_no_merchant
-    skip
     assert_equal 0.00,  sa.revenue_by_merchant(5)
   end
 
-  #MOST SOLD ITEMS
-
   def test_it_ids_paid_invoices
-    skip
     assert_equal 2, sa.find_paid_invoices_by_merchant(1).length
     assert_equal 2, sa.find_paid_invoices_by_merchant(3).length
     assert_equal Invoice, sa.find_paid_invoices_by_merchant(3)[0].class
   end
 
-  def test_it_generates_item_hash
-    skip
-    expected = [[1, 0.95]]
-    assert_equal expected, sa.generate_item_hash_for_merchant(2).values
-    expected = [[1, 1.90], [1, 1.90], [2, 1.90], [3, 3.00]]
-    assert_equal expected, sa.generate_item_hash_for_merchant(1).values
-  end
-
-
-
   def test_most_sold_item_for_merchant_returns_array
-    skip
-    assert_equal Array, sa.most_sold_item_for_merchant(1)
-
+    assert_equal Array, sa.most_sold_item_for_merchant(2).class
   end
 
   def test_most_sold_item_for_merchant_returns_correct
-    skip
-    assert_equal true, sa.most_sold_item_for_merchant(1)[0].name.include?("Item2")
-    assert_equal true, sa.most_sold_item_for_merchant(2)[0].name.include?("Item3")
+    assert_equal "Item2", sa.most_sold_item_for_merchant(1)[0].name
+    assert_equal "Item3", sa.most_sold_item_for_merchant(2)[0].name
   end
 
   def test_most_sold_item_for_merchant_returns_mult_if_tie
-    skip
-    assert_equal 3, sa.most_sold_item_for_merchant(3).length
+    assert_equal 2, sa.most_sold_item_for_merchant(3).length
   end
 
-#BEST ITEMS
-
   def test_best_item_for_merchant_returns_item_obj
-    skip
-    assert_equal Item, sa.best_item_for_merchant(1)
+    assert_equal Item, sa.best_item_for_merchant(1).class
   end
 
   def test_best_item_for_merchant_returns_correct
-    skip
-    assert_equal true, sa.best_item_for_merchant(2).name.include?("Item3")
-    assert_equal true, sa.best_item_for_merchant(3).name.include?("Item6")
+    assert_equal "Item3", sa.best_item_for_merchant(2).name
+    assert_equal "Item6", sa.best_item_for_merchant(3).name
   end
-
-#======DONE HERE================
 
   def test_it_finds_threshold_for_postitive_std_devs
     assert_equal 8.55, sa.threshold([10, 8, 3, 4, 5, 6, 7], 1)
