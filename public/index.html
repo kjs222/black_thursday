@@ -7,7 +7,7 @@
 
 <body>
 
-  <h1> Merchant: <i>Merchant 1</i></h1>
+  <h1> Merchant: <i>HoggardWoodworks</i></h1>
 
   <!-- <h2>Merchant Characteristics</h2>
 
@@ -23,67 +23,67 @@
       
       <tr>
         <td>Merchant</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
       </tr>
     
       <tr>
         <td>All</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
       </tr>
     
       <tr>
         <td>Top Earners</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
       </tr>
     
       <tr>
         <td>Like Merchants: Revenue</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
       </tr>
     
       <tr>
         <td>Like Merchants: Item Number</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
       </tr>
     
       <tr>
         <td>Like Merchants: Item Price</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
       </tr>
     
   </table> -->
 
-  <h2>Merchant 1 (blue) compared to All Merchants (grey)</h2>
+  <h2>HoggardWoodworks (blue) compared to All Merchants (grey)</h2>
   <canvas id="radar_all" width="600" height="400"></canvas>
 
-  <h2>Merchant 1 (blue) compared to Top Revenue Earners (grey) </h2>
+  <h2>HoggardWoodworks (blue) compared to Top Revenue Earners (grey) </h2>
   <canvas id="radar_top" width="600" height="400"></canvas>
 
-  <h2>Merchant 1 (blue) compared to Merchants with Similar Revenue (grey)</h2>
+  <h2>HoggardWoodworks (blue) compared to Merchants with Similar Revenue (grey)</h2>
   <canvas id="radar_like_rev" width="600" height="400"></canvas>
 
-  <h2>Merchant 1 (blue) compared to Merchants with Similar Items (#) (grey) </h2>
+  <h2>HoggardWoodworks (blue) compared to Merchants with Similar Items (#) (grey) </h2>
   <canvas id="radar_like_items" width="600" height="400"></canvas>
 
-  <h2>Merchant 1 (blue) compared to Merchants with Similar Items (Avg Price) (Grey) </h2>
+  <h2>HoggardWoodworks (blue) compared to Merchants with Similar Items (Avg Price) (Grey) </h2>
   <canvas id="radar_like_item_price" width="600" height="400"></canvas>
 
 <!-- All Merchants -->
@@ -99,7 +99,7 @@
             pointStrokeColor: "#fff",
             pointHighlightFill: "#fff",
             pointHighlightStroke: "rgba(151,187,205,1)",
-            data: [100, 10, 30, 50]
+            data: [1, 19, 20, 40]
         },
         {
             label: "All Merchants",
@@ -109,7 +109,7 @@
             pointStrokeColor: "#fff",
             pointHighlightFill: "#fff",
             pointHighlightStroke: "rgba(220,220,220,1)",
-            data: [30, 15, 100, 30]
+            data: [2.877894736842105, 0.911578947368421, 10.494736842105263, 350]
         }
     ]
 };
@@ -130,7 +130,7 @@
             pointStrokeColor: "#fff",
             pointHighlightFill: "#fff",
             pointHighlightStroke: "rgba(151,187,205,1)",
-            data: [100, 10, 30, 50]
+            data: [1, 19, 20, 40]
         },
         {
             label: "Top Earners",
@@ -140,7 +140,7 @@
             pointStrokeColor: "#fff",
             pointHighlightFill: "#fff",
             pointHighlightStroke: "rgba(220,220,220,1)",
-            data: [20, 10, 50, 100]
+            data: [2.6, 4.15, 15.8, 107]
         }
       ]
     };
@@ -163,7 +163,7 @@
           pointStrokeColor: "#fff",
           pointHighlightFill: "#fff",
           pointHighlightStroke: "rgba(151,187,205,1)",
-          data: [100, 10, 30, 50]
+          data: [1, 19, 20, 40]
       },
       {
           label: "Merchants with Similar Revenue",
@@ -173,7 +173,7 @@
           pointStrokeColor: "#fff",
           pointHighlightFill: "#fff",
           pointHighlightStroke: "rgba(220,220,220,1)",
-          data: [40, 40, 90, 80]
+          data: [2.5, 4.75, 18.0, 303]
       }
     ]
     };
@@ -195,7 +195,7 @@
             pointStrokeColor: "#fff",
             pointHighlightFill: "#fff",
             pointHighlightStroke: "rgba(151,187,205,1)",
-            data: [50, 10, 30, 50]
+            data: [212752, 19, 20, 40]
         },
         {
             label: "Merchants with Similar Items (#)",
@@ -205,7 +205,7 @@
             pointStrokeColor: "#fff",
             pointHighlightFill: "#fff",
             pointHighlightStroke: "rgba(220,220,220,1)",
-            data: [100, 40, 90, 70]
+            data: [69943, 1.0246913580246915, 10.613168724279836, 504]
         }
       ]
     };
@@ -228,7 +228,7 @@
             pointStrokeColor: "#fff",
             pointHighlightFill: "#fff",
             pointHighlightStroke: "rgba(151,187,205,1)",
-            data: [50, 10, 30, 100]
+            data: [212752, 19, 20, 1]
         },
         {
             label: "Merchants with Similar Items (#)",
@@ -238,7 +238,7 @@
             pointStrokeColor: "#fff",
             pointHighlightFill: "#fff",
             pointHighlightStroke: "rgba(220,220,220,1)",
-            data: [500, 40, 50, 20]
+            data: [78361, 1.4230769230769231, 9.884615384615385, 3.730769230769231]
         }
       ]
     };
