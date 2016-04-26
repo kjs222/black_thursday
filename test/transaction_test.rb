@@ -6,9 +6,17 @@ class TransactionTest < Minitest::Test
  attr_reader :transactions, :transaction
   def setup
     @se = SalesEngine.from_csv({
-      :transactions   => "./data/small_transactions.csv"})
-    @transactions = @se.transactions
-    @transaction = @transactions.all[0]
+      :items     => "./data/small_items.csv",
+      :merchants => "./data/small_merchants.csv",
+      :invoice_items => "./data/small_invoice_items.csv",
+      :customers => "./data/small_customers.csv",
+      :transactions => "./data/small_transactions.csv",
+      :invoices  => "./data/small_invoices.csv"})
+
+      @se.invoices
+      @transactions = @se.transactions
+      @transaction = @transactions.all[0] #first transaction
+
   end
 
   def test_we_can_return_transaction_id
@@ -37,6 +45,14 @@ class TransactionTest < Minitest::Test
 
   def test_can_return_time_updated_at
     assert_equal Time.parse("2012-02-26 20:56:56 UTC"), transaction.updated_at
+  end
+
+  def test_we_can_retrieve_invoice_object
+    assert_equal Invoice, transaction.invoice.class
+  end
+
+  def test_we_can_retrieve_correct_invoice
+    assert_equal 12335938, transaction.invoice.merchant_id
   end
 
 end

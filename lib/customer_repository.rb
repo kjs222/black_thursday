@@ -6,8 +6,7 @@ class CustomerRepository
   include Find
   include CSV_IO
   attr_accessor :customers
-  attr_reader :id, :first_name, :last_name,
-  :sales_engine
+  attr_reader :file, :sales_engine
 
   def initialize(file=nil, sales_engine)
     @file = file
@@ -16,7 +15,7 @@ class CustomerRepository
   end
 
   def add_new(data, sales_engine)
-    @customers << Customer.new(data, sales_engine)
+    customers << Customer.new(data, sales_engine)
   end
 
   def all

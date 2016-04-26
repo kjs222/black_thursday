@@ -2,7 +2,6 @@ require_relative 'transaction'
 require_relative "sales_engine"
 require_relative 'find'
 require_relative "csv_io"
-require "pry"
 
 class TransactionRepository
   include Find

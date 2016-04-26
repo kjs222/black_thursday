@@ -19,7 +19,7 @@ class SalesEngineTest < Minitest::Test
       :items     => "./data/small_items.csv",
       :merchants => "./data/small_merchants.csv",
       :invoice_items => "./data/small_invoice_items.csv",
-      :customers => "./data/small_customers_items.csv",
+      :customers => "./data/small_customers.csv",
       :transactions => "./data/small_transactions.csv",
       :invoices  => "./data/small_invoices.csv"})
   end
@@ -33,7 +33,7 @@ class SalesEngineTest < Minitest::Test
       :items     => "./data/small_items.csv",
       :merchants => "./data/small_merchants.csv",
       :invoice_items => "./data/small_invoice_items.csv",
-      :customers => "./data/small_customers_items.csv",
+      :customers => "./data/small_customers.csv",
       :transactions => "./data/small_transactions.csv",
       :invoices  => "./data/small_invoices.csv"}), se.files
   end
