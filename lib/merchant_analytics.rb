@@ -20,7 +20,7 @@ class MerchantAnalytics < SalesAnalyst
                   "Like Merchants: Item Price" => {}}
     #hardcoded to see if output correct, remove
     @analytics = {"Merchant" => {:name => "Merchant 1",
-                  :revenue => 50, :items => 100,
+                  :revenue => 70, :items => 100,
                   :invoices => 30, :customers =>  10,
                   :average_price => 50},
                   "All" => {:revenue => 100, :items => 30,
@@ -61,7 +61,7 @@ class MerchantAnalytics < SalesAnalyst
   end
 
   def generate_merchant_hash(merchant) #hardcoded for now
-    @analytics["Merchant"] = {:name => "Merch1", :revenue => 205, :items => 2, :invoices => 30, :customers =>  10, :average_price => 100}
+    @analytics["Merchant"] = {:name => "Merch1", :revenue => 70, :items => 2, :invoices => 30, :customers =>  10, :average_price => 100}
   end
 
   def generate_all_hash
@@ -78,6 +78,75 @@ class MerchantAnalytics < SalesAnalyst
 
   def generate_like_item_price_hash
   end
+
+  def calculate_merchant_item_count_average(merchant_array)
+    average(generate_merchant_item_count_array(merchant_array))
+  end
+
+  def generate_merchant_item_count_array(merchant_array)
+    merchant_array.map do |merchant|
+      merchant.items.length
+    end.sort
+  end
+
+
+  def generate_merchant_invoice_count_array(merchant_array)
+    merchant_array.map do |merchant|
+      merchant.invoices.length
+    end.sort
+  end
+
+
+
+  def calculate_merchant_invoice_count_average(merchant_array)
+    average(generate_merchant_invoice_count_array(merchant_array))
+  end
+
+  def calculate_merchant_item_average(merchant_array)
+    average(merchant_array)
+  end
+
+
+  def generate_merchant_customer_count_array(merchant_array)
+    merchant_array.map do |merchant|
+      merchant.customers.length
+    end.sort
+  end
+
+
+
+  def calculate_merchant_invoice_count_average(merchant_array)
+    average(generate_merchant_customer_count_array(merchant_array))
+  end
+
+
+  def generate_merchant_item_price_array(merchant_array)
+    #merch
+    merchant_array.map do |merchant|
+      average_item_price_for_merchant(merchant.id)
+    end.sort
+  end
+
+
+
+  def calculate_merchant_item_price_average(merchant_array)
+    average(generate_merchant_item_price_array(merchant_array))
+  end
+
+
+  def generate_merchant_revenue_array(merchant_array)
+    #merch
+    merchant_array.map do |merchant|
+      revenue_by_merchant(merchant.id)
+    end.sort
+  end
+
+  def calculate_merchant_revenue_average(merchant_array)
+    average(generate_merchant_revenue_array(merchant_array))
+  end
+
+
+
 
   def generate_like_subset(feature, range) #tested
     if feature == :revenue
@@ -100,18 +169,20 @@ class MerchantAnalytics < SalesAnalyst
     sales_engine.merchants.find_by_id(merchant_id).items.length
   end
 
-  def revenue_by_merchant(merchant_id) #hardcoded until rev by merc built, then delete and udpate test
-    200
-  end
-
 end
 
 
 if __FILE__==$0
-  se = SalesEngine.from_csv({
+  @se = SalesEngine.from_csv({
     :items     => "./data/small_items.csv",
-    :merchants => "./data/small_merchants.csv"})
-  ma = MerchantAnalytics.new(se)
+    :merchants => "./data/small_merchants.csv",
+    :invoice_items => "./data/small_invoice_items.csv",
+    :customers => "./data/small_customers.csv",
+    :transactions => "./data/small_transactions.csv",
+    :invoices  => "./data/small_invoices.csv"})
+  ma = MerchantAnalytics.new(@se)
   ma.setup_output_template
   ma.save_report
+
+
 end
