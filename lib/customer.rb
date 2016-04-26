@@ -1,6 +1,6 @@
 
 class Customer
-  attr_reader :id, :first_name, :last_name, :sales_engine #, :customers
+  attr_reader :id, :first_name, :last_name, :sales_engine
 
   def initialize(data, sales_engine)
     @id = data[:id].to_i
@@ -28,7 +28,5 @@ class Customer
       sales_engine.merchants.find_by_id(merchant_id)
     end
   end
-
-
 
 end

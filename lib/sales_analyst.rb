@@ -1,5 +1,6 @@
 require 'bigdecimal'
 require_relative 'standard_deviation'
+require 'time'
 
 class SalesAnalyst
   include StandardDeviation
@@ -86,8 +87,6 @@ class SalesAnalyst
     sales_engine.invoices.all.length * 100).round(2)
   end
 
-  #======================
-
   def total_revenue_by_date(date)
     invoices = find_all_invoices_by_date(date)
     total =invoices.reduce(0) do |sum, invoice|
@@ -96,16 +95,6 @@ class SalesAnalyst
     BigDecimal.new(total).round(2)
   end
 
-
-  def find_all_invoices_by_date(date)#helper_function, passing test
-    date = Time.parse(date).strftime('%D')
-    sales_engine.invoices.all.select do |invoice|
-      invoice.created_at.strftime('%D') == date
-    end
-  end
-
-
-#=============
   def top_revenue_earners(num=20)
     hash = generate_merchant_revenue_hash
     sorted = hash.sort_by {|merchant, revenue| revenue}.reverse.to_h
@@ -116,23 +105,11 @@ class SalesAnalyst
     top_revenue_earners(sales_engine.merchants.all.length)
   end
 
-  def generate_merchant_revenue_hash#helper function
-    merchant_revenue_hash = {}
-    sales_engine.merchants.all.each do |merchant|
-      merchant_revenue_hash[merchant] = revenue_by_merchant(merchant.id)
-    end
-    merchant_revenue_hash
-  end
-
-#===========
-
   def merchants_with_pending_invoices
     sales_engine.merchants.all.select do |merchant|
       merchant.invoices.any? {|invoice| !invoice.is_paid_in_full?}
     end
   end
-
-#==============
 
   def merchants_with_only_one_item
     sales_engine.merchants.all.select do |merchant|
@@ -147,8 +124,6 @@ class SalesAnalyst
     end
   end
 
-#==============
-
   def revenue_by_merchant(merchant_id)
     all_invoices = sales_engine.invoices.find_all_by_merchant_id(merchant_id)
     total = all_invoices.reduce(0) do |cuml_total, invoice|
@@ -157,46 +132,6 @@ class SalesAnalyst
     BigDecimal.new(total).round(2)
   end
 
-  #================
-
-  def find_paid_invoices_by_merchant(merchant_id)
-    #helper function
-    merchant = sales_engine.merchants.find_by_id(merchant_id)
-    merchant.invoices.select do |invoice|
-      invoice.is_paid_in_full?
-    end
-  end
-
-  def generate_most_sold_array(merchant_id)
-    invoices = find_paid_invoices_by_merchant(merchant_id)
-    most_sold_hash = Hash.new(0)
-
-    invoices.each do |invoice|
-      sales_engine.invoice_items.find_all_by_invoice_id(invoice.id).each do |invoice_item|
-        most_sold_hash[invoice_item.item_id] += invoice_item.quantity
-      end
-    end
-
-    sorted_array = most_sold_hash.sort_by {|k, v| v}.reverse
-    most_sold = sorted_array.find_all {|pair| pair[1] == sorted_array[0][1]}
-  end
-
-  def generate_best_item(merchant_id)
-    invoices = find_paid_invoices_by_merchant(merchant_id)
-    best_item_hash = Hash.new(0)
-
-    invoices.each do |invoice|
-
-      sales_engine.invoice_items.find_all_by_invoice_id(invoice.id).each do |invoice_item|
-        best_item_hash[invoice_item.item_id] += invoice_item.quantity * invoice_item.unit_price
-      end
-
-    end
-
-    best_item = best_item_hash.sort_by {|k, v| v}.reverse[0][0]
-  end
-
-#
   def most_sold_item_for_merchant(merchant_id)
     most_sold = generate_most_sold_array(merchant_id)
     most_sold.map do |item_id|
@@ -209,8 +144,7 @@ class SalesAnalyst
     sales_engine.items.find_by_id(best_item)
   end
 
-
-#=======================DONE=====
+  #=========HELPER METHODS===============
 
   def item_price_array
     sales_engine.items.all.map do |item|
@@ -267,6 +201,57 @@ class SalesAnalyst
     sales_engine.invoices.all.group_by do |invoice|
       invoice.status
     end
+  end
+
+  def find_all_invoices_by_date(date)#
+    date = Time.parse(date.to_s).strftime('%D')
+    sales_engine.invoices.all.select do |invoice|
+      invoice.created_at.strftime('%D') == date
+    end
+  end
+
+  def generate_merchant_revenue_hash
+    merchant_revenue_hash = {}
+    sales_engine.merchants.all.each do |merchant|
+      merchant_revenue_hash[merchant] = revenue_by_merchant(merchant.id)
+    end
+    merchant_revenue_hash
+  end
+
+  def find_paid_invoices_by_merchant(merchant_id)
+    merchant = sales_engine.merchants.find_by_id(merchant_id)
+    merchant.invoices.select do |invoice|
+      invoice.is_paid_in_full?
+    end
+  end
+
+  def generate_most_sold_array(merchant_id)
+    invoices = find_paid_invoices_by_merchant(merchant_id)
+    most_sold_hash = Hash.new(0)
+
+    invoices.each do |invoice|
+      sales_engine.invoice_items.find_all_by_invoice_id(invoice.id).each do |invoice_item|
+        most_sold_hash[invoice_item.item_id] += invoice_item.quantity
+      end
+    end
+
+    sorted_array = most_sold_hash.sort_by {|k, v| v}.reverse
+    most_sold = sorted_array.find_all {|pair| pair[1] == sorted_array[0][1]}
+  end
+
+  def generate_best_item(merchant_id)
+    invoices = find_paid_invoices_by_merchant(merchant_id)
+    best_item_hash = Hash.new(0)
+
+    invoices.each do |invoice|
+
+      sales_engine.invoice_items.find_all_by_invoice_id(invoice.id).each do |invoice_item|
+        best_item_hash[invoice_item.item_id] += invoice_item.quantity * invoice_item.unit_price
+      end
+
+    end
+
+    best_item = best_item_hash.sort_by {|k, v| v}.reverse[0][0]
   end
 
 end

@@ -103,9 +103,7 @@ class SalesAnalystTest < Minitest::Test
   end
 
   def test_standard_deviation_can_calc_for_invoices
-    #failing, could be due to data change
-    skip
-    assert_equal 2.31,  sa.average_invoices_per_merchant_standard_deviation
+    assert_equal 1.53,  sa.average_invoices_per_merchant_standard_deviation
   end
 
   def test_we_can_find_top_performing_merchants
@@ -148,10 +146,6 @@ class SalesAnalystTest < Minitest::Test
     assert_equal 14.29, sa.invoice_status(:returned)
   end
 
-  #======================
-
-  ##TOTAL REV BY DATE
-
   def test_total_revenue_by_date_returns_BD
     assert_equal BigDecimal, sa.total_revenue_by_date("2016-04-21").class
   end
@@ -165,13 +159,10 @@ class SalesAnalystTest < Minitest::Test
     assert_equal 0.00, sa.total_revenue_by_date("2016-03-21")
   end
 
-
   def test_it_finds_all_invoices_by_date
     assert_equal 4, sa.find_all_invoices_by_date("2016-04-18").length
     assert_equal 0, sa.find_all_invoices_by_date("2012-04-21").length
   end
-
-  #TOP REVENUE EARNERS
 
   def test_merchant_revenue_hash_is_correct
     assert_equal 0.95, sa.generate_merchant_revenue_hash.values[1]
@@ -212,8 +203,6 @@ class SalesAnalystTest < Minitest::Test
     assert_equal 1,  sa.merchants_with_pending_invoices.length
   end
 
-  #MERCHS WITH 1 ITEM
-
   def test_merchants_with_only_one_item_returns_array
     assert_equal Array, sa.merchants_with_only_one_item.class
   end
@@ -222,8 +211,6 @@ class SalesAnalystTest < Minitest::Test
     assert_equal true, sa.merchants_with_only_one_item[0].name.include?("Merch2")
     assert_equal 1,  sa.merchants_with_only_one_item.length
   end
-
-  #ONE ITEM BY MONTH
 
   def test_merchants_with_only_one_item_in_month_returns_array
     assert_equal Array, sa.merchants_with_only_one_item_registered_in_month("January").class
@@ -238,8 +225,6 @@ class SalesAnalystTest < Minitest::Test
     assert_equal 0,  sa.merchants_with_only_one_item_registered_in_month("January").length
   end
 
-  #REV BY MERCHANT
-
   def test_revenue_by_merchant_returns_BD
     assert_equal BigDecimal,  sa.revenue_by_merchant(3).class
   end
@@ -252,33 +237,11 @@ class SalesAnalystTest < Minitest::Test
     assert_equal 0.00,  sa.revenue_by_merchant(5)
   end
 
-  #MOST SOLD ITEMS
-
   def test_it_ids_paid_invoices
     assert_equal 2, sa.find_paid_invoices_by_merchant(1).length
     assert_equal 2, sa.find_paid_invoices_by_merchant(3).length
     assert_equal Invoice, sa.find_paid_invoices_by_merchant(3)[0].class
   end
-
-  # def test_it_generates_item_hash_for_invoice_with_quan_rev
-  #   assert_equal 1, sa.generate_item_hash_for_invoice(1).values[0][0]
-  #   assert_equal 1.90, sa.generate_item_hash_for_invoice(1).values[0][1]
-  # end
-  #
-  # def test_it_generates_item_hash_for_invoice_w_mult_items
-  #   assert_equal 2, sa.generate_item_hash_for_invoice(2).values[1][0]
-  #   assert_equal 3.00, sa.generate_item_hash_for_invoice(2).values[2][1]
-  #   assert_equal 3, sa.generate_item_hash_for_invoice(2).values.length
-  # end
-  #
-  # def test_item_hash_has_invoice_items_as_keys
-  #   assert_equal InvoiceItem, sa.generate_item_hash_for_invoice(2).keys[0].class
-  # end
-  #
-  # def test_it_generates_item_hash_for_merchant
-  #   assert_equal 2, sa.generate_item_hash_for_merchant(1).values[0][0]
-  #   assert_equal 3.8, sa.generate_item_hash_for_merchant(1).values[0][1]
-  # end
 
   def test_most_sold_item_for_merchant_returns_array
     assert_equal Array, sa.most_sold_item_for_merchant(2).class
@@ -293,8 +256,6 @@ class SalesAnalystTest < Minitest::Test
     assert_equal 2, sa.most_sold_item_for_merchant(3).length
   end
 
-#BEST ITEMS
-
   def test_best_item_for_merchant_returns_item_obj
     assert_equal Item, sa.best_item_for_merchant(1).class
   end
@@ -303,8 +264,6 @@ class SalesAnalystTest < Minitest::Test
     assert_equal "Item3", sa.best_item_for_merchant(2).name
     assert_equal "Item6", sa.best_item_for_merchant(3).name
   end
-
-#======DONE HERE================
 
   def test_it_finds_threshold_for_postitive_std_devs
     assert_equal 8.55, sa.threshold([10, 8, 3, 4, 5, 6, 7], 1)
