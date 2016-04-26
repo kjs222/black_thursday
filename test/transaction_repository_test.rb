@@ -36,5 +36,6 @@ class TransactionRepositoryTest < Minitest::Test
     assert transaction_repo.find_all_by_result("success").is_a?(Array)
     assert_equal 8, transaction_repo.find_all_by_result("success").length
   end
+  
 
 end
