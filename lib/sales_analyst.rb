@@ -1,7 +1,6 @@
 require 'bigdecimal'
 require_relative 'standard_deviation'
 require 'time'
-require 'pry'
 
 class SalesAnalyst
   include StandardDeviation
