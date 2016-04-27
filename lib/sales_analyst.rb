@@ -126,11 +126,12 @@ class SalesAnalyst
   end
 
   def revenue_by_merchant(merchant_id)
-    all_invoices = sales_engine.invoices.find_all_by_merchant_id(merchant_id)
-    total = all_invoices.reduce(0) do |cuml_total, invoice|
-      cuml_total += invoice.total
-    end
-    BigDecimal.new(total).round(2)
+    sales_engine.merchants.find_by_id(merchant_id).revenue
+    # all_invoices = sales_engine.invoices.find_all_by_merchant_id(merchant_id)
+    # total = all_invoices.reduce(0) do |cuml_total, invoice|
+    #   cuml_total += invoice.total
+    # end
+    # BigDecimal.new(total).round(2)
   end
 
   def most_sold_item_for_merchant(merchant_id)
@@ -215,13 +216,13 @@ class SalesAnalyst
     end
   end
 
-  def generate_merchant_revenue_hash
-    merchant_revenue_hash = {}
-    sales_engine.merchants.all.each do |merchant|
-      merchant_revenue_hash[merchant] = revenue_by_merchant(merchant.id)
-    end
-    merchant_revenue_hash
-  end
+  # def generate_merchant_revenue_hash
+  #   merchant_revenue_hash = {}
+  #   sales_engine.merchants.all.each do |merchant|
+  #     merchant_revenue_hash[merchant] = revenue_by_merchant(merchant.id)
+  #   end
+  #   merchant_revenue_hash
+  # end
 
   def find_paid_invoices_by_merchant(merchant_id)
     merchant = sales_engine.merchants.find_by_id(merchant_id)
@@ -233,7 +234,7 @@ class SalesAnalyst
   def generate_item_hash_for_invoice(invoice_id)
     all_items = sales_engine.invoice_items.find_all_by_invoice_id(invoice_id)
     all_items.map do |invoice_item|
-      {invoice_item.item_id => {:quantity => invoice_item.quantity, 
+      {invoice_item.item_id => {:quantity => invoice_item.quantity,
       :revenue => invoice_item.unit_price * invoice_item.quantity}}
     end
   end

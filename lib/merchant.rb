@@ -1,5 +1,5 @@
 class Merchant
-  attr_reader :id, :name, :sales_engine
+  attr_reader :id, :name, :sales_engine, :revenue
 
   def initialize(data, sales_engine)
     @id           = data[:id].to_i
@@ -34,6 +34,15 @@ class Merchant
   def num_invoices
     invoices.length
   end
+
+  def revenue
+    all_invoices = sales_engine.invoices.find_all_by_merchant_id(merchant_id)
+    total = all_invoices.reduce(0) do |cuml_total, invoice|
+      cuml_total += invoice.total
+    end
+    @revenue = BigDecimal.new(total).round(2)
+  end
+
 
 
 
