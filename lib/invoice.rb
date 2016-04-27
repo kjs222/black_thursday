@@ -5,12 +5,12 @@ class Invoice
               :sales_engine
 
   def initialize(data, sales_engine)
-    @id = data[:id].to_i
-    @customer_id = data[:customer_id].to_i
-    @merchant_id = data[:merchant_id].to_i
-    @status = data[:status].to_sym
-    @created_at = data[:created_at]
-    @updated_at = data[:updated_at]
+    @id           = data[:id].to_i
+    @customer_id  = data[:customer_id].to_i
+    @merchant_id  = data[:merchant_id].to_i
+    @status       = data[:status].to_sym
+    @created_at   = data[:created_at]
+    @updated_at   = data[:updated_at]
     @sales_engine = sales_engine
   end
 
@@ -49,7 +49,7 @@ class Invoice
       0
     else
       items = sales_engine.invoice_items.find_all_by_invoice_id(id)
-      result = items.reduce(0) do |total, item|
+      items.reduce(0) do |total, item|
         total + item.unit_price * item.quantity
       end.round(2)
     end

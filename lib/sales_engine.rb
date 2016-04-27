@@ -14,13 +14,13 @@ class SalesEngine
                 :customer_repo, :transaction_repo
 
   def initialize(files)
-    @files = files
-    @merchant_repo = nil
-    @item_repo = nil
-    @invoice_repo = nil
+    @files             = files
+    @merchant_repo     = nil
+    @item_repo         = nil
+    @invoice_repo      = nil
     @invoice_item_repo = nil
-    @transaction_repo = nil
-    @customer_repo = nil
+    @transaction_repo  = nil
+    @customer_repo     = nil
   end
 
   def self.from_csv(files)
@@ -73,6 +73,14 @@ class SalesEngine
       @customer_repo.load_csv_data
     end
     @customer_repo
+  end
+
+  def total_merchants
+    merchants.all.length
+  end
+
+  def total_invoices
+    invoices.all.length
   end
 
 end

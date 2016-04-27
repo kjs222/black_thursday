@@ -1,5 +1,4 @@
 require_relative 'transaction'
-require_relative "sales_engine"
 require_relative 'find'
 require_relative "csv_io"
 
@@ -8,10 +7,10 @@ class TransactionRepository
   include CSV_IO
 
   attr_accessor :transactions
-  attr_reader :file, :sales_engine
+  attr_reader   :file, :sales_engine
 
   def initialize(file=nil, sales_engine)
-    @file = file
+    @file         = file
     @transactions = []
     @sales_engine = sales_engine
   end

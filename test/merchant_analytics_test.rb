@@ -51,12 +51,6 @@ class MerchantAnalyticsTest < Minitest::Test
 
   def test_it_finds_correct_subset_on_revenue
     ma.generate_analytics_merchant(1)
-    assert_equal 2, ma.generate_like_subset(:revenue, 0.1).length
-    assert_equal "Mer2", ma.generate_like_subset(:revenue, 0.1)[-1].name
-  end
-
-  def test_it_finds_correct_subset_on_revenue
-    ma.generate_analytics_merchant(1)
     assert_equal 3, ma.generate_like_subset(:revenue, 0.1).length
     assert_equal "Mer3", ma.generate_like_subset(:revenue, 0.1)[-1].name
   end

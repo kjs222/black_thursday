@@ -189,8 +189,6 @@ class MerchantAnalytics < SalesAnalyst
       calculate_invoice_count_average(merchant_set)
   end
 
-
-
 end
 
 

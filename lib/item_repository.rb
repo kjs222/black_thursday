@@ -7,11 +7,11 @@ class ItemRepository
   include CSV_IO
 
   attr_accessor :items
-  attr_reader :file, :sales_engine
+  attr_reader   :file, :sales_engine
 
   def initialize(file=nil, sales_engine)
-    @file = file
-    @items = []
+    @file         = file
+    @items        = []
     @sales_engine = sales_engine
   end
 
@@ -40,17 +40,15 @@ class ItemRepository
   end
 
   def find_all_by_price(price)
-    tolerance = 0.0000
     @items.find_all do |item|
-      (item.unit_price_to_dollars - price).abs <= tolerance
+      item.unit_price_to_dollars == price
     end
   end
 
   def find_all_by_price_in_range(range)
-    tolerance = 0.0000
     @items.find_all do |item|
-      item.unit_price_to_dollars >= (range.begin - tolerance) &&
-      item.unit_price_to_dollars <= (range.end + tolerance)
+      item.unit_price_to_dollars >= range.begin &&
+      item.unit_price_to_dollars <= range.end
     end
   end
 

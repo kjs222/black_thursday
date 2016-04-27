@@ -7,11 +7,11 @@ class InvoiceRepository
   include CSV_IO
 
   attr_accessor :invoices
-  attr_reader :file, :sales_engine
+  attr_reader   :file, :sales_engine
 
   def initialize(file=nil, sales_engine)
-    @file = file
-    @invoices = []
+    @file         = file
+    @invoices     = []
     @sales_engine = sales_engine
   end
 

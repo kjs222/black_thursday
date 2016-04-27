@@ -1,15 +1,14 @@
-
 class Merchant
   attr_reader :id, :name, :sales_engine
 
   def initialize(data, sales_engine)
-    @id = data[:id].to_i
-    @name = data[:name]
+    @id           = data[:id].to_i
+    @name         = data[:name]
     @sales_engine = sales_engine
-    @created_at = data[:created_at]
+    @created_at   = data[:created_at]
   end
 
-  def created_at #not tested
+  def created_at
     Time.parse(@created_at)
   end
 
@@ -22,12 +21,18 @@ class Merchant
   end
 
   def customers
-    customer_ids = invoices.map do |invoice|
-      invoice.customer_id
-    end
+    customer_ids = invoices.map {|invoice| invoice.customer_id}
     customer_ids.map do |customer_id|
       sales_engine.customers.find_by_id(customer_id)
     end.uniq
+  end
+
+  def num_items
+    items.length
+  end
+
+  def num_invoices
+    invoices.length
   end
 
 

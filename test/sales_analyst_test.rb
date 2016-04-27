@@ -137,7 +137,7 @@ class SalesAnalystTest < Minitest::Test
   end
 
   def test_we_can_hash_by_invoice_status
-    assert_equal 4, sa.group_invoices_status[:shipped].length
+    assert_equal 4, sa.group_invoices_by_status[:shipped].length
   end
 
   def test_we_can_percentage_of_invoices_with_given_status

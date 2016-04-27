@@ -1,12 +1,5 @@
 require_relative 'test_helper'
 require_relative '../lib/sales_engine'
-# require_relative 'merchant_repository'
-# require_relative 'item_repository'
-# require_relative 'merchant_repository'
-# require_relative 'invoice_repository'
-# require_relative 'invoice_item_repository'
-# require_relative 'transaction_repository'
-# require_relative 'customer_repository'
 
   # TODO Add isoloation test for CSV_IO
 
@@ -247,7 +240,7 @@ class SalesEngineTest < Minitest::Test
     assert_equal expected, se.invoice_items.all[1].updated_at
   end
 
-  def test_invoice_objects_have_updated_at_as_time_obj
+  def test_invoice_item_objects_have_updated_at_as_time_obj
     @se.invoice_items
     assert_equal Time, se.invoice_items.all[1].updated_at.class
   end
