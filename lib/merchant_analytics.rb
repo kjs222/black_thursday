@@ -7,7 +7,8 @@ require 'erb'
 class MerchantAnalytics < SalesAnalyst
   include StandardDeviation
 
-  attr_reader :sales_engine, :analytics, :erb_template
+  attr_reader :sales_engine, :erb_template
+  attr_accessor :analytics
 
   def initialize(sales_engine)
     @sales_engine = sales_engine
@@ -22,6 +23,7 @@ class MerchantAnalytics < SalesAnalyst
 
   def run_merchant_analytics(merchant_id)
     generate_all_data(merchant_id)
+    normalize_data_for_chart
     setup_output_template
     save_report
   end
@@ -61,6 +63,13 @@ class MerchantAnalytics < SalesAnalyst
     subhash[:customers] = merch.customers.nil? ? 0 : merch.customers.length
     subhash[:average_price] = average_item_price_for_merchant(merchant_id).to_i
     subhash[:invoices]  = merch.invoices.nil? ? 0 : merch.invoices.length
+  end
+
+  def normalize_data_for_chart
+    @analytics.each do |key, _v|
+      @analytics[key][:revenue] = @analytics[key][:revenue]/100
+      @analytics[key][:average_price] = @analytics[key][:average_price]/10
+    end
   end
 
   def generate_analytics_all
@@ -123,14 +132,14 @@ class MerchantAnalytics < SalesAnalyst
     average(customer_count_array(merchant_array)).round(2)
   end
 
-  def generate_merchant_item_price_array(merchant_array)
+  def generate_item_price_array(merchant_array)
     merchant_array.map do |merchant|
-      average_item_price_for_merchant(merchant.id)
+      average_item_price_for_merchant(merchant.id).to_f
     end
   end
 
   def calculate_item_price_average(merchant_array)
-    average(generate_merchant_item_price_array(merchant_array)).round(2)
+    average(generate_item_price_array(merchant_array)).round(2)
   end
 
   def generate_merchant_revenue_array(merchant_array)
@@ -179,6 +188,8 @@ class MerchantAnalytics < SalesAnalyst
     subhash[:invoices] =
       calculate_invoice_count_average(merchant_set)
   end
+
+
 
 end
 
