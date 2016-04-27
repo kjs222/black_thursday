@@ -38,25 +38,25 @@ class MerchantAnalyticsTest < Minitest::Test
   end
 
   def test_it_finds_correct_subset_on_num_items
-    ma.generate_merchant_hash(1)
+    ma.generate_analytics_merchant(1)
     assert_equal 4, ma.generate_like_subset(:items, 0.1).length
     assert_equal "Mer2", ma.generate_like_subset(:items, 0.1)[1].name
   end
 
   def test_it_finds_correct_subset_on_avg_price
-    ma.generate_merchant_hash(1)
+    ma.generate_analytics_merchant(1)
     assert_equal 2, ma.generate_like_subset(:average_price, 0.1).length
     assert_equal "Mer2", ma.generate_like_subset(:average_price, 0.1)[-1].name
   end
 
   def test_it_finds_correct_subset_on_revenue
-    ma.generate_merchant_hash(1)
+    ma.generate_analytics_merchant(1)
     assert_equal 2, ma.generate_like_subset(:revenue, 0.1).length
     assert_equal "Mer2", ma.generate_like_subset(:revenue, 0.1)[-1].name
   end
 
   def test_it_finds_correct_subset_on_revenue
-    ma.generate_merchant_hash(1)
+    ma.generate_analytics_merchant(1)
     assert_equal 2, ma.generate_like_subset(:revenue, 0.1).length
     assert_equal "Mer2", ma.generate_like_subset(:revenue, 0.1)[-1].name
   end
@@ -68,26 +68,26 @@ class MerchantAnalyticsTest < Minitest::Test
 
   def test_it_calculates_average_num_items
     merchants = se.merchants.all
-    assert_equal [3, 3, 3, 3, 5, 1], ma.generate_merchant_item_count_array(merchants)
-    assert_equal 3, ma.calculate_merchant_item_count_average(merchants)
+    assert_equal [3, 3, 3, 3, 5, 1], ma.item_count_array(merchants)
+    assert_equal 3, ma.calculate_item_count_average(merchants)
   end
 
   def test_it_calculates_average_price
     merchants = se.merchants.all
-    # assert_equal [10, 11, 9.5, 5, 2, 20], ma.generate_merchant_item_price_array(merchants)
-    # assert_equal 10, ma.calculate_merchant_item_price_average(merchants)
+    # assert_equal [10, 11, 9.5, 5, 2, 20], ma.item_price_array(merchants)
+    # assert_equal 10, ma.calculate_item_price_average(merchants)
   end
 
   def test_it_calculates_average_customers
     merchants = se.merchants.all
-    assert_equal [1, 1, 2, 2, 2, 2], ma.generate_merchant_customer_count_array(merchants)
-    assert_equal 1.67, ma.calculate_merchant_customer_count_average(merchants)
+    assert_equal [1, 1, 2, 2, 2, 2], ma.customer_count_array(merchants)
+    assert_equal 1.67, ma.calculate_customer_count_average(merchants)
   end
 
   def test_it_calculates_average_invoices
     merchants = se.merchants.all
-    assert_equal [2, 2, 2, 2, 2, 2], ma.generate_merchant_invoice_count_array(merchants)
-    assert_equal 2, ma.calculate_merchant_invoice_count_average(merchants)
+    assert_equal [2, 2, 2, 2, 2, 2], ma.invoice_count_array(merchants)
+    assert_equal 2, ma.calculate_invoice_count_average(merchants)
   end
 
   def test_it_generates_correct_hash_for_merchant

@@ -12,12 +12,12 @@ class MerchantAnalytics < SalesAnalyst
   def initialize(sales_engine)
     @sales_engine = sales_engine
     @erb_template = nil
-    @analytics = {"Merchant" => Hash.new(0),
-                  "All" => Hash.new(0),
-                  "Top Earners" => Hash.new(0),
-                  "Like Merchants: Revenue" => Hash.new(0),
+    @analytics = {"Merchant"                    => Hash.new(0),
+                  "All"                         => Hash.new(0),
+                  "Top Earners"                 => Hash.new(0),
+                  "Like Merchants: Revenue"     => Hash.new(0),
                   "Like Merchants: Item Number" => Hash.new(0),
-                  "Like Merchants: Item Price" => Hash.new(0)}
+                  "Like Merchants: Item Price"  => Hash.new(0)}
   end
 
   def run_merchant_analytics(merchant_id)
@@ -27,12 +27,12 @@ class MerchantAnalytics < SalesAnalyst
   end
 
   def generate_all_data(merchant_id)
-    generate_merchant_hash(merchant_id)
-    generate_all_hash
-    generate_top_hash
-    generate_like_rev_hash
-    generate_like_item_num_hash
-    generate_like_item_price_hash
+    generate_analytics_merchant(merchant_id)
+    generate_analytics_all
+    generate_analytics_top
+    generate_analytics_like_revenue
+    generate_analytics_like_item_number
+    generate_analytics_like_item_price
   end
 
   def setup_output_template
@@ -44,7 +44,7 @@ class MerchantAnalytics < SalesAnalyst
     @erb_template.result(binding)
   end
 
-  def save_report #test at end
+  def save_report
     Dir.mkdir("public") unless Dir.exist? "public"
     filename = "public/index.html"
     File.open(filename,'w') do |file|
@@ -52,76 +52,75 @@ class MerchantAnalytics < SalesAnalyst
     end
   end
 
-  def generate_merchant_hash(merchant_id)
-    merchant = sales_engine.merchants.find_by_id(merchant_id)
+  def generate_analytics_merchant(merchant_id)
+    merch = sales_engine.merchants.find_by_id(merchant_id)
     subhash = @analytics["Merchant"]
-    subhash[:name] = merchant.name
-    subhash[:revenue] = revenue_by_merchant(merchant_id).to_i
-    subhash[:items] = merchant.items.nil? ? 0 : merchant.items.length
-    subhash[:customers] = merchant.customers.nil? ? 0 : merchant.customers.length
+    subhash[:name]      = merch.name
+    subhash[:revenue]   = revenue_by_merchant(merchant_id).to_i
+    subhash[:items]     = merch.items.nil? ? 0 : merch.items.length
+    subhash[:customers] = merch.customers.nil? ? 0 : merch.customers.length
     subhash[:average_price] = average_item_price_for_merchant(merchant_id).to_i
-    subhash[:invoices] = merchant.invoices.nil? ? 0 : merchant.invoices.length
+    subhash[:invoices]  = merch.invoices.nil? ? 0 : merch.invoices.length
   end
 
-  def generate_all_hash
-    merchant_set = sales_engine.merchants.all
+  def generate_analytics_all
+    merchants = sales_engine.merchants.all
     subhash = @analytics["All"]
-    generate_generic_hash(subhash, merchant_set)
+    analytics_hash_generator(subhash, merchants)
   end
 
-  def generate_top_hash
-    merchant_set = top_revenue_earners(3)
+  def generate_analytics_top
+    merchants = top_revenue_earners(3)
     subhash = @analytics["Top Earners"]
-    generate_generic_hash(subhash, merchant_set)
+    analytics_hash_generator(subhash, merchants)
   end
 
-  def generate_like_rev_hash
-    merchant_set = generate_like_subset(:revenue, 0.1)
+  def generate_analytics_like_revenue
+    merchants = generate_like_subset(:revenue, 0.1)
     subhash = @analytics["Like Merchants: Revenue"]
-    generate_generic_hash(subhash, merchant_set)
+    analytics_hash_generator(subhash, merchants)
   end
 
-  def generate_like_item_num_hash
+  def generate_analytics_like_item_number
     merchant_set = generate_like_subset(:items, 0.1)
     subhash = @analytics["Like Merchants: Item Number"]
-    generate_generic_hash(subhash, merchant_set)
+    analytics_hash_generator(subhash, merchant_set)
   end
 
-  def generate_like_item_price_hash
+  def generate_analytics_like_item_price
     merchant_set = generate_like_subset(:average_price, 0.1)
     subhash = @analytics["Like Merchants: Item Price"]
-    generate_generic_hash(subhash, merchant_set)
+    analytics_hash_generator(subhash, merchant_set)
   end
 
-  def calculate_merchant_item_count_average(merchant_array)
-    average(generate_merchant_item_count_array(merchant_array)).round(2)
+  def calculate_item_count_average(merchant_array)
+    average(item_count_array(merchant_array)).round(2)
   end
 
-  def generate_merchant_item_count_array(merchant_array)
+  def item_count_array(merchant_array)
     merchant_array.map do |merchant|
       merchant.items.nil? ? 0 : merchant.items.length
     end
   end
 
-  def generate_merchant_invoice_count_array(merchant_array)
+  def invoice_count_array(merchant_array)
     merchant_array.map do |merchant|
       merchant.invoices.nil? ? 0 : merchant.invoices.length
     end
   end
 
-  def calculate_merchant_invoice_count_average(merchant_array)
-    average(generate_merchant_invoice_count_array(merchant_array)).round(2)
+  def calculate_invoice_count_average(merchant_array)
+    average(invoice_count_array(merchant_array)).round(2)
   end
 
-  def generate_merchant_customer_count_array(merchant_array)
-    # binding.pry
+  def customer_count_array(merchant_array)
     merchant_array.map do |merchant|
       merchant.customers.nil? ? 0 : merchant.customers.length
     end
   end
 
-  def calculate_merchant_customer_count_average(merchant_array)
-    average(generate_merchant_customer_count_array(merchant_array)).round(2)
+  def calculate_customer_count_average(merchant_array)
+    average(customer_count_array(merchant_array)).round(2)
   end
 
   def generate_merchant_item_price_array(merchant_array)
@@ -130,7 +129,7 @@ class MerchantAnalytics < SalesAnalyst
     end
   end
 
-  def calculate_merchant_item_price_average(merchant_array)
+  def calculate_item_price_average(merchant_array)
     average(generate_merchant_item_price_array(merchant_array)).round(2)
   end
 
@@ -140,13 +139,12 @@ class MerchantAnalytics < SalesAnalyst
     end
   end
 
-  def calculate_merchant_revenue_average(merchant_array)
+  def calculate_revenue_average(merchant_array)
     average(generate_merchant_revenue_array(merchant_array))
   end
 
-  def generate_like_subset(feature, range) #tested
+  def generate_like_subset(feature, range)
     if feature == :revenue
-      # binding.pry
       method = "revenue_by_merchant"
     elsif feature == :items
       method = "number_of_items"
@@ -156,29 +154,30 @@ class MerchantAnalytics < SalesAnalyst
     select_subset(feature, range, method)
   end
 
-  def select_subset(feature, range, method) #tested #prob need to handle not less than 0
-    subs = sales_engine.merchants.all.select do |merchant|
-      (self.send(method, merchant.id) <= (1 + range) * analytics["Merchant"][feature]) && (self.send(method, merchant.id) >= (1 - range) * analytics["Merchant"][feature])
-      # binding.pry
+  def select_subset(feature, range, method)
+    sales_engine.merchants.all.select do |merchant|
+      self.send(method, merchant.id) <= (1 + range) *
+      analytics["Merchant"][feature] &&
+      self.send(method, merchant.id) >= (1 - range) *
+      analytics["Merchant"][feature]
     end
-    subs
   end
 
   def number_of_items(merchant_id)
     sales_engine.merchants.find_by_id(merchant_id).items.length
   end
 
-  def generate_generic_hash(subhash, merchant_set)
+  def analytics_hash_generator(subhash, merchant_set)
     subhash[:revenue] =
-      calculate_merchant_revenue_average(merchant_set).to_i
+      calculate_revenue_average(merchant_set).to_i
     subhash[:items] =
-      calculate_merchant_item_count_average(merchant_set)
+      calculate_item_count_average(merchant_set)
     subhash[:customers] =
-      calculate_merchant_customer_count_average(merchant_set)
+      calculate_customer_count_average(merchant_set)
     subhash[:average_price] =
-      calculate_merchant_item_price_average(merchant_set).to_i
+      calculate_item_price_average(merchant_set).to_i
     subhash[:invoices] =
-      calculate_merchant_invoice_count_average(merchant_set)
+      calculate_invoice_count_average(merchant_set)
   end
 
 end
