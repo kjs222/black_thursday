@@ -4,6 +4,7 @@ require_relative '../lib/sales_engine'
 
 class InvoiceRepositoryTest < Minitest::Test
   attr_reader :se, :invoice_repo
+
   def setup
     @se = SalesEngine.from_csv({
       :invoices => "./data/small_invoices.csv" })
@@ -22,8 +23,16 @@ class InvoiceRepositoryTest < Minitest::Test
     assert_equal 12334839, invoice_repo.find_by_id(10).merchant_id
   end
 
+  def test_returns_nil_when_bad_id_provided
+    assert_equal nil, invoice_repo.find_by_id(10000)
+  end
+
   def test_we_can_find_all_by_customer_id
     assert_equal 2, invoice_repo.find_all_by_customer_id(2).length
+  end
+
+  def test_returns_empty_when_bad_customer_id_provided
+    assert_equal [], invoice_repo.find_all_by_customer_id(10000)
   end
 
   def test_we_can_identify_find_all_by_customer_id_data
@@ -32,6 +41,10 @@ class InvoiceRepositoryTest < Minitest::Test
 
   def test_we_can_find_all_by_merchant_id
     assert_equal 2, invoice_repo.find_all_by_merchant_id(12335938).length
+  end
+
+  def test_returns_empty_when_bad_merchant_id_provided
+    assert_equal [], invoice_repo.find_all_by_merchant_id("A")
   end
 
   def test_we_can_find_all_by_merchant_id_was_created_at

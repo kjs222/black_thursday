@@ -9,8 +9,8 @@ class CustomerRepository
   attr_reader     :file, :sales_engine, :first_name, :last_name
 
   def initialize(file=nil, sales_engine)
-    @file = file
-    @customers = []
+    @file         = file
+    @customers    = []
     @sales_engine = sales_engine
   end
 
