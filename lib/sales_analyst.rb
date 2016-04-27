@@ -37,10 +37,10 @@ class SalesAnalyst
   end
 
   def average_average_price_per_merchant
+    total_merchants = sales_engine.total_merchants
     sum_averages = sales_engine.merchants.all.reduce(0) do |sum, merchant|
       sum + average_item_price_for_merchant(merchant.id)
     end
-    total_merchants = sales_engine.total_merchants
     (sum_averages/total_merchants).round(2)
   end
 
@@ -97,9 +97,10 @@ class SalesAnalyst
   end
 
   def top_revenue_earners(num=20)
-    revenue_hash = generate_merchant_revenue_hash
-    sorted = revenue_hash.sort_by {|merchant, revenue| revenue}.reverse.to_h
-    sorted.keys[0...num]
+    if sales_engine.merchants.revenue_array.nil?
+      sales_engine.merchants.generate_revenue_array
+    end
+    sales_engine.merchants.revenue_array.take(num).map {|hash| hash.keys[0]}
   end
 
   def merchants_ranked_by_revenue
@@ -127,27 +128,20 @@ class SalesAnalyst
 
   def revenue_by_merchant(merchant_id)
     sales_engine.merchants.find_by_id(merchant_id).revenue
-    # all_invoices = sales_engine.invoices.find_all_by_merchant_id(merchant_id)
-    # total = all_invoices.reduce(0) do |cuml_total, invoice|
-    #   cuml_total += invoice.total
-    # end
-    # BigDecimal.new(total).round(2)
   end
 
   def most_sold_item_for_merchant(merchant_id)
-    hash = generate_item_hash_for_merchant(merchant_id)
-    top = hash.max_by {|item, values| values[:quantity]}
-    quantity = top[1][:quantity]
-    most_sold = hash.find_all {|k, v| v[:quantity] == quantity}
-    most_sold.map do |item|
-      sales_engine.items.find_by_id(item[0])
-    end
+    items = generate_item_hash_for_merchant(merchant_id)
+    top_item = items.max_by {|item, values| values[:quantity]}
+    top_quantity = top_item[1][:quantity]
+    most_sold = items.find_all {|k, v| v[:quantity] == top_quantity}
+    most_sold.map {|item| sales_engine.items.find_by_id(item[0])}
   end
 
   def best_item_for_merchant(merchant_id)
-    hash = generate_item_hash_for_merchant(merchant_id)
-    best_id = hash.max_by {|item, values| values[:revenue]}
-    sales_engine.items.find_by_id(best_id[0])
+    items = generate_item_hash_for_merchant(merchant_id)
+    best_item_id = items.max_by {|item, values| values[:revenue]}
+    sales_engine.items.find_by_id(best_item_id[0])
   end
 
   #=========HELPER METHODS===============
@@ -215,14 +209,6 @@ class SalesAnalyst
       invoice.created_at.strftime('%D') == date
     end
   end
-
-  # def generate_merchant_revenue_hash
-  #   merchant_revenue_hash = {}
-  #   sales_engine.merchants.all.each do |merchant|
-  #     merchant_revenue_hash[merchant] = revenue_by_merchant(merchant.id)
-  #   end
-  #   merchant_revenue_hash
-  # end
 
   def find_paid_invoices_by_merchant(merchant_id)
     merchant = sales_engine.merchants.find_by_id(merchant_id)

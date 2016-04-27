@@ -164,11 +164,11 @@ class SalesAnalystTest < Minitest::Test
     assert_equal 0, sa.find_all_invoices_by_date("2012-04-21").length
   end
 
-  def test_merchant_revenue_hash_is_correct
-    assert_equal 0.95, sa.generate_merchant_revenue_hash.values[1]
-    assert_equal 71.50, sa.generate_merchant_revenue_hash.values[2]
-    assert sa.generate_merchant_revenue_hash.keys[0].name.include?("Merch1")
-
+  def test_merchant_revenue_array_is_correct
+    se.merchants.generate_revenue_array
+    assert_equal "Merch3", se.merchants.revenue_array[0].keys[0].name
+    assert_equal "Merch1", se.merchants.revenue_array[1].keys[0].name
+    assert_equal "Merch2", se.merchants.revenue_array[2].keys[0].name
   end
 
   def test_top_revenue_earners_returns_array
@@ -231,10 +231,6 @@ class SalesAnalystTest < Minitest::Test
 
   def test_revenue_by_merchant_returns_correct_amount
     assert_equal 71.50,  sa.revenue_by_merchant(3)
-  end
-
-  def test_revenue_by_merchant_returns_0_if_no_merchant
-    assert_equal 0.00,  sa.revenue_by_merchant(5)
   end
 
   def test_it_ids_paid_invoices

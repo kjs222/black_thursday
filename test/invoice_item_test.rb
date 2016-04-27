@@ -30,6 +30,11 @@ class InvoiceItemTest < Minitest::Test
       assert_equal Time.parse("2016-04-21"), invoice_item.created_at
   end
 
+  def test_it_can_convert_price_to_dollars
+    inv_item = se.invoice_items.find_by_id(1)
+    assert_equal 1.9, inv_item.unit_price_to_dollars
+  end
+
   def setup_invoice_items
     @se.invoice_item_repo.add_new({:id => 1, :invoice_id => 1, :item_id => 1, :unit_price => "190", :quantity => "1", :created_at => "2016-04-21"}, @se)
     @se.invoice_item_repo.add_new({:id => 2, :invoice_id => 2, :item_id => 1, :unit_price => "190", :quantity => "1", :created_at => "2016-04-21"}, @se)
