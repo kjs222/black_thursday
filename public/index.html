@@ -2,88 +2,28 @@
 
 <head>
   <script src="js/Chart.min.js"></script>
-  <link href="css/style.css" text="text/css" rel="stylesheet"/>
+  <!-- <link href="css/style.css" text="text/css" rel="stylesheet"/> -->
 </head>
 
 <body>
 
-  <h1> Merchant: <i>Merchant 1</i></h1>
+  <h1> Merchant: <i>Turing School Merchants</i></h1>
 
-  <!-- <h2>Merchant Characteristics</h2>
+  <h6> Note: Revenue and price data has been normalized for charting purposes.  Actual revenue is 100 times the value represented below.  Actual price is 10 times the value represented below</h4>
 
-    <table id="table">
-      <tr class="table-title">
-        <th></th>
-        <th>Items (#)</th>
-        <th>Orders (#)</th>
-        <th>Customers (#)</th>
-        <th>Item Price (Avg)</th>
-      </tr>
-
-      
-      <tr>
-        <td>Merchant</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
-    
-      <tr>
-        <td>All</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
-    
-      <tr>
-        <td>Top Earners</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
-    
-      <tr>
-        <td>Like Merchants: Revenue</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
-    
-      <tr>
-        <td>Like Merchants: Item Number</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
-    
-      <tr>
-        <td>Like Merchants: Item Price</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
-    
-  </table> -->
-
-  <h2>Merchant 1 (blue) compared to All Merchants (grey)</h2>
+  <h2>Turing School Merchants (blue) compared to All Merchants (grey)</h2>
   <canvas id="radar_all" width="600" height="400"></canvas>
 
-  <h2>Merchant 1 (blue) compared to Top Revenue Earners (grey) </h2>
+  <h2>Turing School Merchants (blue) compared to Top Revenue Earners (grey) </h2>
   <canvas id="radar_top" width="600" height="400"></canvas>
 
-  <h2>Merchant 1 (blue) compared to Merchants with Similar Revenue (grey)</h2>
+  <h2>Turing School Merchants (blue) compared to Merchants with Similar Revenue (grey)</h2>
   <canvas id="radar_like_rev" width="600" height="400"></canvas>
 
-  <h2>Merchant 1 (blue) compared to Merchants with Similar Items (#) (grey) </h2>
+  <h2>Turing School Merchants (blue) compared to Merchants with Similar Items (#) (grey) </h2>
   <canvas id="radar_like_items" width="600" height="400"></canvas>
 
-  <h2>Merchant 1 (blue) compared to Merchants with Similar Items (Avg Price) (Grey) </h2>
+  <h2>Turing School Merchants (blue) compared to Merchants with Similar Items (Avg Price) (Grey) </h2>
   <canvas id="radar_like_item_price" width="600" height="400"></canvas>
 
 <!-- All Merchants -->
@@ -99,7 +39,7 @@
             pointStrokeColor: "#fff",
             pointHighlightFill: "#fff",
             pointHighlightStroke: "rgba(151,187,205,1)",
-            data: [100, 10, 30, 50]
+            data: [3, 1, 2, 1]
         },
         {
             label: "All Merchants",
@@ -109,7 +49,7 @@
             pointStrokeColor: "#fff",
             pointHighlightFill: "#fff",
             pointHighlightStroke: "rgba(220,220,220,1)",
-            data: [30, 15, 100, 30]
+            data: [3.0, 1.67, 2.0, 2]
         }
     ]
 };
@@ -130,7 +70,7 @@
             pointStrokeColor: "#fff",
             pointHighlightFill: "#fff",
             pointHighlightStroke: "rgba(151,187,205,1)",
-            data: [100, 10, 30, 50]
+            data: [3, 1, 2, 1]
         },
         {
             label: "Top Earners",
@@ -140,7 +80,7 @@
             pointStrokeColor: "#fff",
             pointHighlightFill: "#fff",
             pointHighlightStroke: "rgba(220,220,220,1)",
-            data: [20, 10, 50, 100]
+            data: [3.0, 2.0, 2.0, 3]
         }
       ]
     };
@@ -163,7 +103,7 @@
           pointStrokeColor: "#fff",
           pointHighlightFill: "#fff",
           pointHighlightStroke: "rgba(151,187,205,1)",
-          data: [100, 10, 30, 50]
+          data: [3, 1, 2, 1]
       },
       {
           label: "Merchants with Similar Revenue",
@@ -173,7 +113,7 @@
           pointStrokeColor: "#fff",
           pointHighlightFill: "#fff",
           pointHighlightStroke: "rgba(220,220,220,1)",
-          data: [40, 40, 90, 80]
+          data: [3.0, 1.33, 2.0, 1]
       }
     ]
     };
@@ -195,7 +135,7 @@
             pointStrokeColor: "#fff",
             pointHighlightFill: "#fff",
             pointHighlightStroke: "rgba(151,187,205,1)",
-            data: [50, 10, 30, 50]
+            data: [3, 1, 2, 1]
         },
         {
             label: "Merchants with Similar Items (#)",
@@ -205,7 +145,7 @@
             pointStrokeColor: "#fff",
             pointHighlightFill: "#fff",
             pointHighlightStroke: "rgba(220,220,220,1)",
-            data: [100, 40, 90, 70]
+            data: [6, 1.5, 2.0, 2]
         }
       ]
     };
@@ -228,7 +168,7 @@
             pointStrokeColor: "#fff",
             pointHighlightFill: "#fff",
             pointHighlightStroke: "rgba(151,187,205,1)",
-            data: [50, 10, 30, 100]
+            data: [3, 1, 2, 3]
         },
         {
             label: "Merchants with Similar Items (#)",
@@ -238,7 +178,7 @@
             pointStrokeColor: "#fff",
             pointHighlightFill: "#fff",
             pointHighlightStroke: "rgba(220,220,220,1)",
-            data: [500, 40, 50, 20]
+            data: [3, 1.33, 2.0, 3.0]
         }
       ]
     };

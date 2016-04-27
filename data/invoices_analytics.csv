@@ -1,0 +1,13 @@
+id,customer_id,merchant_id,status,created_at,updated_at
+1,1,1,shipped,4/26/16,4/26/16
+2,2,2,shipped,4/27/16,4/27/16
+3,3,3,shipped,4/28/16,4/28/16
+4,4,4,shipped,4/29/16,4/29/16
+5,5,5,shipped,4/30/16,4/30/16
+6,6,6,shipped,5/1/16,5/1/16
+7,1,1,shipped,5/2/16,5/2/16
+8,2,2,shipped,5/3/16,5/3/16
+9,7,3,shipped,5/4/16,5/4/16
+10,8,4,shipped,5/5/16,5/5/16
+11,9,5,shipped,5/6/16,5/6/16
+12,10,6,shipped,5/7/16,5/7/16

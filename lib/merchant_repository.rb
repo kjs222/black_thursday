@@ -1,19 +1,17 @@
 require_relative 'merchant'
 require_relative 'csv_io'
-# require_relative 'sales_engine'
 require_relative 'find'
-# require 'pry'
 
 class MerchantRepository
   include Find
   include CSV_IO
 
   attr_accessor :merchants
-  attr_reader :file, :sales_engine
+  attr_reader   :file, :sales_engine
 
   def initialize(file=nil, sales_engine)
-    @file = file
-    @merchants = []
+    @file         = file
+    @merchants    = []
     @sales_engine = sales_engine
   end
 

@@ -1,6 +1,6 @@
 module Find
 
-  #search_hash format is like: {:id => 23}
+  #search_hash format: {:id => 23}
 
   def find_by_num(search_hash)
     all.find do |instance|
