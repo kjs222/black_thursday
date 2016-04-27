@@ -1,0 +1,13 @@
+id,invoice_id,credit_card_number,credit_card_expiration_date,result,created_at,updated_at
+1,1,111,111,success,4/26/16,4/26/16
+2,2,111,111,success,4/27/16,4/27/16
+3,3,111,111,success,4/28/16,4/28/16
+4,4,111,111,success,4/29/16,4/29/16
+5,5,111,111,success,4/30/16,4/30/16
+6,6,111,111,success,5/1/16,5/1/16
+7,7,111,111,success,5/2/16,5/2/16
+8,8,111,111,success,5/3/16,5/3/16
+9,9,111,111,success,5/4/16,5/4/16
+10,10,111,111,success,5/5/16,5/5/16
+11,11,111,111,success,5/6/16,5/6/16
+12,12,111,111,success,5/7/16,5/7/16

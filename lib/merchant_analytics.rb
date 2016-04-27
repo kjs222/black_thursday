@@ -3,6 +3,7 @@ require_relative 'standard_deviation'
 require_relative 'sales_analyst'
 require_relative 'sales_engine'
 require 'erb'
+require 'pry'
 
 class MerchantAnalytics < SalesAnalyst
   include StandardDeviation
@@ -70,7 +71,7 @@ class MerchantAnalytics < SalesAnalyst
   end
 
   def generate_top_hash
-    merchant_set = top_revenue_earners
+    merchant_set = top_revenue_earners(3)
     subhash = @analytics["Top Earners"]
     generate_generic_hash(subhash, merchant_set)
   end
@@ -145,6 +146,7 @@ class MerchantAnalytics < SalesAnalyst
 
   def generate_like_subset(feature, range) #tested
     if feature == :revenue
+      # binding.pry
       method = "revenue_by_merchant"
     elsif feature == :items
       method = "number_of_items"
@@ -155,9 +157,11 @@ class MerchantAnalytics < SalesAnalyst
   end
 
   def select_subset(feature, range, method) #tested #prob need to handle not less than 0
-    sales_engine.merchants.all.select do |merchant|
+    subs = sales_engine.merchants.all.select do |merchant|
       (self.send(method, merchant.id) <= (1 + range) * analytics["Merchant"][feature]) && (self.send(method, merchant.id) >= (1 - range) * analytics["Merchant"][feature])
+      # binding.pry
     end
+    subs
   end
 
   def number_of_items(merchant_id) #tested
@@ -180,38 +184,16 @@ class MerchantAnalytics < SalesAnalyst
 end
 
 
-# #hardcoded to see if output correct, remove
-# @analytics = {"Merchant" => {:name => "Merchant 1",
-#               :revenue => 70, :items => 100,
-#               :invoices => 30, :customers =>  10,
-#               :average_price => 50},
-#               "All" => {:revenue => 100, :items => 30,
-#               :invoices => 100, :customers =>  15,
-#               :average_price => 30},
-#               "Top Earners" => {:revenue => 500, :items => 20,
-#               :invoices => 50, :customers =>  10,
-#               :average_price => 100},
-#               "Like Merchants: Revenue" => {:revenue => 50, :items => 40,
-#               :invoices => 90, :customers =>  40,
-#               :average_price => 80},
-#               "Like Merchants: Item Number" => {:revenue => 100, :items => 100,
-#               :invoices => 90, :customers =>  40,
-#               :average_price => 70},
-#               "Like Merchants: Item Price" => {:revenue => 500, :items => 20,
-#               :invoices => 50, :customers =>  40,
-#               :average_price => 50}}
-
-
 if __FILE__==$0
   @se = SalesEngine.from_csv({
-    :items     => "./data/items.csv",
-    :merchants => "./data/merchants.csv",
-    :invoice_items => "./data/invoice_items.csv",
-    :customers => "./data/customers.csv",
-    :transactions => "./data/transactions.csv",
-    :invoices  => "./data/invoices.csv"})
+    :items     => "./data/items_analytics.csv",
+    :merchants => "./data/merchants_analytics.csv",
+    :invoice_items => "./data/invoice_items_analytics.csv",
+    :customers => "./data/customers_analytics.csv",
+    :transactions => "./data/transactions_analytics.csv",
+    :invoices  => "./data/invoices_analytics.csv"})
   ma = MerchantAnalytics.new(@se)
-  ma.run_merchant_analytics(12334634)
+  ma.run_merchant_analytics(1)
 
 
 end
