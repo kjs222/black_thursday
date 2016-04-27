@@ -6,21 +6,23 @@ class InvoiceTest < Minitest::Test
   attr_reader :invoice, :se, :invoice_repo, :invoice2, :invoice3
   def setup
     @se = SalesEngine.from_csv({
-      :items     => "./data/small_items.csv",
-      :merchants => "./data/small_merchants.csv",
-      :invoice_items => "./data/small_invoice_items.csv",
-      :customers => "./data/small_customers.csv",
-      :transactions => "./data/small_transactions.csv",
-      :invoices  => "./data/small_invoices.csv"})
+      :items          => "./data/small_items.csv",
+      :merchants      => "./data/small_merchants.csv",
+      :invoice_items  => "./data/small_invoice_items.csv",
+      :customers      => "./data/small_customers.csv",
+      :transactions   => "./data/small_transactions.csv",
+      :invoices       => "./data/small_invoices.csv"})
     @invoice_repo = @se.invoices
     @se.merchants
     @se.invoice_items
+    @se.items
     @invoice = Invoice.new({
       :created_at => "1988-10-18",
       :updated_at => "2011-04-09",
       :status => :shipped,
       :customer_id => 1,
-      :id => 1}, se)
+      :id => 1,
+      :merchant_id => 1}, se)
     @invoice2 = Invoice.new({:id => 2, :status => :shipped}, se)
     @invoice3 = @invoice_repo.invoices[2]
 
@@ -40,30 +42,6 @@ class InvoiceTest < Minitest::Test
 
   def test_we_can_retrieve_all_items_on_an_invoice
     assert_equal 8, invoice.items.length
-  end
-
-  def test_we_can_retrieve_correct_item
-    skip
-    #failing due to lack of alignment in data
-    assert_equal 263519844, invoice.items.id
-  end
-
-  def test_we_can_retrieve_correct_secondary_item
-    skip
-    #failing due to lack of alignment in data
-    assert_equal 263454779, invoice.items.id
-  end
-
-  def test_items_array_includes_item_objects
-    skip
-    #failing due to lack of alignment in data
-    assert_equal 263454779, invoice.items[0].class
-  end
-
-  def test_items_returns_array
-    skip
-    #failing due to lack of alignment in data
-    assert_equal Array, invoice.items.class
   end
 
   def test_we_can_retrieve_all_transactions_for_invoice
@@ -99,7 +77,6 @@ class InvoiceTest < Minitest::Test
   end
 
   def test_total_returns_correct_total_for_multi_item_invoice
-    p invoice.total.to_i
     assert_equal 21067.77, invoice.total
   end
 

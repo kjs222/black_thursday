@@ -32,4 +32,16 @@ class InvoiceItemRepositoryTest < Minitest::Test
     assert_equal 8, invoice_item_repo.find_all_by_invoice_id(1).length
   end
 
+  def test_find_by_id_nil_when_no_match
+    assert_equal nil, invoice_item_repo.find_by_id(18)
+  end
+
+  def test_find_by_invoice_id_empty_when_no_match
+    assert_equal [], invoice_item_repo.find_all_by_invoice_id(1000)
+  end
+
+  def test_find_by_item_id_empty_when_no_match
+    assert_equal [], invoice_item_repo.find_all_by_item_id(1000)
+  end
+
 end

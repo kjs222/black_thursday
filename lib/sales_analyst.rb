@@ -233,7 +233,7 @@ class SalesAnalyst
   def generate_item_hash_for_invoice(invoice_id)
     all_items = sales_engine.invoice_items.find_all_by_invoice_id(invoice_id)
     all_items.map do |invoice_item|
-      {invoice_item.item_id => {:quantity => invoice_item.quantity,
+      {invoice_item.item_id => {:quantity => invoice_item.quantity, 
       :revenue => invoice_item.unit_price * invoice_item.quantity}}
     end
   end
