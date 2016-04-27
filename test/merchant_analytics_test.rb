@@ -8,27 +8,19 @@ class MerchantAnalyticsTest < Minitest::Test
 
   def setup
     @se = SalesEngine.from_csv({
-      :items     => "./data/small_items.csv",
-      :merchants => "./data/small_merchants.csv",
-      :invoice_items => "./data/small_invoice_items.csv",
-      :customers => "./data/small_customers.csv",
-      :transactions => "./data/small_transactions.csv",
-      :invoices  => "./data/small_invoices.csv"})
-    @ma = MerchantAnalytics.new(se)
-
-    @se.merchant_repo = MerchantRepository.new(nil, se)
-    @se.item_repo = ItemRepository.new(nil, se)
-    @se.invoice_repo = InvoiceRepository.new(nil, se)
-    @se.invoice_item_repo = InvoiceItemRepository.new(nil, se)
-    @se.transaction_repo = TransactionRepository.new(nil, se)
-    @se.customer_repo = CustomerRepository.new(nil, se)
-
-    setup_merchants
-    setup_items
-    setup_invoices
-    setup_invoice_items
-    setup_transactions
-    setup_customers
+      :items     => "./data/items_analytics.csv",
+      :merchants => "./data/merchants_analytics.csv",
+      :invoice_items => "./data/invoice_items_analytics.csv",
+      :customers => "./data/customers_analytics.csv",
+      :transactions => "./data/transactions_analytics.csv",
+      :invoices  => "./data/invoices_analytics.csv"})
+    @ma = MerchantAnalytics.new(@se)
+    @se.merchants
+    @se.items
+    @se.invoices
+    @se.transactions
+    @se.invoice_items
+    @se.customers
   end
 
   def test_it_has_ref_to_se_on_ititialization
@@ -41,25 +33,32 @@ class MerchantAnalyticsTest < Minitest::Test
   end
 
   def test_it_has_access_to_SA_methods
-      assert_equal 2.33, ma.average_items_per_merchant
-      assert_equal 1, ma.average_item_price_for_merchant(1).to_i
+      assert_equal 3, ma.average_items_per_merchant
+      assert_equal 10, ma.average_item_price_for_merchant(1).to_i
   end
 
   def test_it_finds_correct_subset_on_num_items
-    ma.generate_merchant_hash(merchant)
-    assert_equal 2, ma.generate_like_subset(:items, 0.1).length
-    assert_equal "Merch2", ma.generate_like_subset(:items, 0.1)[1].name
+    ma.generate_merchant_hash(1)
+    assert_equal 4, ma.generate_like_subset(:items, 0.1).length
+    assert_equal "Mer2", ma.generate_like_subset(:items, 0.1)[1].name
   end
 
   def test_it_finds_correct_subset_on_avg_price
-    ma.generate_merchant_hash(merchant)
+    ma.generate_merchant_hash(1)
     assert_equal 2, ma.generate_like_subset(:average_price, 0.1).length
-    assert_equal "Merch3", ma.generate_like_subset(:average_price, 0.1)[1].name
+    assert_equal "Mer2", ma.generate_like_subset(:average_price, 0.1)[-1].name
   end
 
   def test_it_finds_correct_subset_on_revenue
-    assert_equal 1, ma.generate_like_subset(:revenue, 0.1).length
-    assert_equal "Merch3", ma.generate_like_subset(:revenue, 0.1)[0].name
+    ma.generate_merchant_hash(1)
+    assert_equal 2, ma.generate_like_subset(:revenue, 0.1).length
+    assert_equal "Mer2", ma.generate_like_subset(:revenue, 0.1)[-1].name
+  end
+
+  def test_it_finds_correct_subset_on_revenue
+    ma.generate_merchant_hash(1)
+    assert_equal 2, ma.generate_like_subset(:revenue, 0.1).length
+    assert_equal "Mer2", ma.generate_like_subset(:revenue, 0.1)[-1].name
   end
 
   def test_setup_output_template_creates_ERB_obj
@@ -67,63 +66,59 @@ class MerchantAnalyticsTest < Minitest::Test
     assert_equal ERB, ma.erb_template.class
   end
 
-  def setup_merchants
-    @se.merchant_repo.add_new({:id => 1, :name => "Merch1", :created_at => "2016-04-22"}, @se)
-    @se.merchant_repo.add_new({:id => 2, :name => "Merch2", :created_at => "2016-10-22"}, @se)
-    @se.merchant_repo.add_new({:id => 3, :name => "Merch3", :created_at => "2016-08-22"}, @se)
+  def test_it_calculates_average_num_items
+    merchants = se.merchants.all
+    assert_equal [3, 3, 3, 3, 5, 1], ma.generate_merchant_item_count_array(merchants)
+    assert_equal 3, ma.calculate_merchant_item_count_average(merchants)
   end
 
-  def setup_items
-    @se.item_repo.add_new({:id => 1, :name => "Item1", :unit_price => 200, :merchant_id => 1}, @se)
-    @se.item_repo.add_new({:id => 2, :name => "Item2", :unit_price => 100, :merchant_id => 1}, @se)
-
-    @se.item_repo.add_new({:id => 3, :name => "Item3", :unit_price => 100, :merchant_id => 2}, @se)
-
-    @se.item_repo.add_new({:id => 4, :name => "Item4", :unit_price => 500, :merchant_id => 3}, @se)
-    @se.item_repo.add_new({:id => 5, :name => "Item5", :unit_price => 1000, :merchant_id => 3}, @se)
-    @se.item_repo.add_new({:id => 6, :name => "Item6", :unit_price => 3000, :merchant_id => 3}, @se)
-    @se.item_repo.add_new({:id => 7, :name => "Item7", :unit_price => 1250, :merchant_id => 3}, @se)
+  def test_it_calculates_average_price
+    merchants = se.merchants.all
+    # assert_equal [10, 11, 9.5, 5, 2, 20], ma.generate_merchant_item_price_array(merchants)
+    # assert_equal 10, ma.calculate_merchant_item_price_average(merchants)
   end
 
-  def setup_invoices
-    @se.invoice_repo.add_new({:id => 1, :customer_id => 1, :merchant_id => 1, :status => "shipped", :created_at => "2016-04-18"}, @se)
-    @se.invoice_repo.add_new({:id => 2, :customer_id => 1, :merchant_id => 1, :status => "shipped", :created_at => "2016-04-19"}, @se)
-    @se.invoice_repo.add_new({:id => 3, :customer_id => 2, :merchant_id => 2, :status => "shipped", :created_at => "2016-04-19"}, @se)
-    @se.invoice_repo.add_new({:id => 4, :customer_id => 3, :merchant_id => 3, :status => "returned", :created_at => "2016-04-20"}, @se)
-    @se.invoice_repo.add_new({:id => 5, :customer_id => 1, :merchant_id => 3, :status => "shipped", :created_at => "2016-04-18"}, @se)
-    @se.invoice_repo.add_new({:id => 6, :customer_id => 1, :merchant_id => 3, :status => "pending", :created_at => "2016-04-18"}, @se)
-    @se.invoice_repo.add_new({:id => 7, :customer_id => 1, :merchant_id => 3, :status => "pending", :created_at => "2016-04-18"}, @se)
+  def test_it_calculates_average_customers
+    merchants = se.merchants.all
+    assert_equal [1, 1, 2, 2, 2, 2], ma.generate_merchant_customer_count_array(merchants)
+    assert_equal 1.67, ma.calculate_merchant_customer_count_average(merchants)
   end
 
-  def setup_invoice_items
-    @se.invoice_item_repo.add_new({:id => 1, :invoice_id => 1, :item_id => 1, :unit_price => "190", :quantity => "1", :created_at => "2016-04-21"}, @se)
-    @se.invoice_item_repo.add_new({:id => 2, :invoice_id => 2, :item_id => 1, :unit_price => "190", :quantity => "1", :created_at => "2016-04-21"}, @se)
-    @se.invoice_item_repo.add_new({:id => 3, :invoice_id => 2, :item_id => 2, :unit_price => "95", :quantity => "2", :created_at => "2016-04-21"}, @se)
-    @se.invoice_item_repo.add_new({:id => 4, :invoice_id => 2, :item_id => 2, :unit_price => "100", :quantity => "3", :created_at => "2016-04-21"}, @se)
-    @se.invoice_item_repo.add_new({:id => 5, :invoice_id => 3, :item_id => 3, :unit_price => "95", :quantity => "1", :created_at => "2016-04-18"}, @se)
-    @se.invoice_item_repo.add_new({:id => 6, :invoice_id => 4, :item_id => 4, :unit_price => "500", :quantity => "2", :created_at => "2016-04-20"}, @se)
-    @se.invoice_item_repo.add_new({:id => 7, :invoice_id => 4, :item_id => 5, :unit_price => "1000", :quantity => "1", :created_at => "2016-04-20"}, @se)
-    @se.invoice_item_repo.add_new({:id => 8, :invoice_id => 4, :item_id => 6, :unit_price => "2900", :quantity => "1", :created_at => "2016-04-20"}, @se)
-    @se.invoice_item_repo.add_new({:id => 9, :invoice_id => 4, :item_id => 7, :unit_price => "1250", :quantity => "1", :created_at => "2016-04-20"}, @se)
-    @se.invoice_item_repo.add_new({:id => 10, :invoice_id => 5, :item_id => 5, :unit_price => "1000", :quantity => "1", :created_at => "2016-04-18"}, @se)
-    @se.invoice_item_repo.add_new({:id => 11, :invoice_id => 6, :item_id => 6, :unit_price => "2900", :quantity => "1", :created_at => "2016-04-21"}, @se)
-    @se.invoice_item_repo.add_new({:id => 12, :invoice_id => 7, :item_id => 7, :unit_price => "1250", :quantity => "1", :created_at => "2016-04-20"}, @se)
+  def test_it_calculates_average_invoices
+    merchants = se.merchants.all
+    assert_equal [2, 2, 2, 2, 2, 2], ma.generate_merchant_invoice_count_array(merchants)
+    assert_equal 2, ma.calculate_merchant_invoice_count_average(merchants)
   end
 
-  def setup_transactions
-    @se.transaction_repo.add_new({:id => 1, :invoice_id => 1, :result => "success"}, @se)
-    @se.transaction_repo.add_new({:id => 2, :invoice_id => 2, :result => "success"}, @se)
-    @se.transaction_repo.add_new({:id => 3, :invoice_id => 3, :result => "success"}, @se)
-    @se.transaction_repo.add_new({:id => 4, :invoice_id => 4, :result => "success"}, @se)
-    @se.transaction_repo.add_new({:id => 5, :invoice_id => 5, :result => "success"}, @se)
-    @se.transaction_repo.add_new({:id => 6, :invoice_id => 6, :result => "failed"}, @se)
-    @se.transaction_repo.add_new({:id => 7, :invoice_id => 7, :result => "failed"}, @se)
+  def test_it_generates_correct_hash_for_merchant
+    ma.run_merchant_analytics(1)
+    assert_equal ({:name => "Mer1", :revenue => 300, :items => 3,  :customers => 1, :average_price => 10, :invoices => 2}), ma.analytics["Merchant"]
   end
 
-  def setup_customers
-    @se.customer_repo.add_new({:id => 1, :first_name => "Kerry"}, @se)
-    @se.customer_repo.add_new({:id => 2, :first_name => "Colin"}, @se)
-    @se.customer_repo.add_new({:id => 3, :first_name => "Fake"}, @se)
+  def test_it_generates_correct_hash_for_all
+    ma.run_merchant_analytics(1)
+    assert_equal ({:revenue => 1330, :items => 3.0,  :customers => 1.67, :average_price => 64, :invoices => 2.0}), ma.analytics["All"]
   end
+
+  def test_it_generates_correct_hash_for_top
+    ma.run_merchant_analytics(1)
+    assert_equal ({:revenue => 2116, :items => 2.33,  :customers => 2.0, :average_price => 115, :invoices => 2.0}), ma.analytics["Top Earners"]
+  end
+
+  def test_it_generates_correct_hash_for_like_rev
+    ma.run_merchant_analytics(1)
+    assert_equal ({:revenue => 315, :items => 3.0,  :customers => 1.0, :average_price => 10, :invoices => 2.0}), ma.analytics["Like Merchants: Revenue"]
+  end
+
+  def test_it_generates_correct_hash_for_like_itm_num
+    ma.run_merchant_analytics(1)
+    assert_equal ({:revenue => 1245, :items => 3.00,  :customers => 1.5, :average_price => 41, :invoices => 2.0}), ma.analytics["Like Merchants: Item Number"]
+  end
+
+  def test_it_generates_correct_hash_for_like_itm_pr
+    ma.run_merchant_analytics(1)
+    assert_equal ({:revenue => 315, :items => 3.0,  :customers => 1.0, :average_price => 10, :invoices => 2.0}), ma.analytics["Like Merchants: Item Price"]
+  end
+
 
 end

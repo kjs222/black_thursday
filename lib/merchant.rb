@@ -27,7 +27,7 @@ class Merchant
     end
     customer_ids.map do |customer_id|
       sales_engine.customers.find_by_id(customer_id)
-    end.uniq!
+    end.uniq
   end
 
 

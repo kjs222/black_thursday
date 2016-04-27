@@ -3,7 +3,6 @@ require_relative 'standard_deviation'
 require_relative 'sales_analyst'
 require_relative 'sales_engine'
 require 'erb'
-require 'pry'
 
 class MerchantAnalytics < SalesAnalyst
   include StandardDeviation
@@ -46,7 +45,7 @@ class MerchantAnalytics < SalesAnalyst
   end
 
   def save_report #test at end
-    Dir.mkdir("public") unless Dir.exists? "public"
+    Dir.mkdir("public") unless Dir.exist? "public"
     filename = "public/index.html"
     File.open(filename,'w') do |file|
       file.puts generate_report
@@ -95,7 +94,7 @@ class MerchantAnalytics < SalesAnalyst
   end
 
   def calculate_merchant_item_count_average(merchant_array)
-    average(generate_merchant_item_count_array(merchant_array))
+    average(generate_merchant_item_count_array(merchant_array)).round(2)
   end
 
   def generate_merchant_item_count_array(merchant_array)
@@ -111,17 +110,18 @@ class MerchantAnalytics < SalesAnalyst
   end
 
   def calculate_merchant_invoice_count_average(merchant_array)
-    average(generate_merchant_invoice_count_array(merchant_array))
+    average(generate_merchant_invoice_count_array(merchant_array)).round(2)
   end
 
   def generate_merchant_customer_count_array(merchant_array)
+    # binding.pry
     merchant_array.map do |merchant|
       merchant.customers.nil? ? 0 : merchant.customers.length
     end
   end
 
   def calculate_merchant_customer_count_average(merchant_array)
-    average(generate_merchant_customer_count_array(merchant_array))
+    average(generate_merchant_customer_count_array(merchant_array)).round(2)
   end
 
   def generate_merchant_item_price_array(merchant_array)
@@ -131,7 +131,7 @@ class MerchantAnalytics < SalesAnalyst
   end
 
   def calculate_merchant_item_price_average(merchant_array)
-    average(generate_merchant_item_price_array(merchant_array))
+    average(generate_merchant_item_price_array(merchant_array)).round(2)
   end
 
   def generate_merchant_revenue_array(merchant_array)
@@ -164,7 +164,7 @@ class MerchantAnalytics < SalesAnalyst
     subs
   end
 
-  def number_of_items(merchant_id) #tested
+  def number_of_items(merchant_id)
     sales_engine.merchants.find_by_id(merchant_id).items.length
   end
 
