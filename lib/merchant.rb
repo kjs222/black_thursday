@@ -35,6 +35,15 @@ class Merchant
     invoices.length
   end
 
+  def revenue
+    all_invoices = sales_engine.invoices.find_all_by_merchant_id(id)
+    total = all_invoices.reduce(0) do |cuml_total, invoice|
+      cuml_total += invoice.total
+    end
+    revenue = BigDecimal.new(total).round(2)
+  end
+
+
 
 
 

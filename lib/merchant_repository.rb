@@ -7,7 +7,7 @@ class MerchantRepository
   include CSV_IO
 
   attr_accessor :merchants
-  attr_reader   :file, :sales_engine
+  attr_reader   :file, :sales_engine, :revenue_array
 
   def initialize(file=nil, sales_engine)
     @file         = file
@@ -34,5 +34,14 @@ class MerchantRepository
   def find_all_by_name(partial)
     find_all_by_string_fragment({:name => partial})
   end
+
+  def generate_revenue_array
+    revenue_array = all.map do |merchant|
+      {merchant => merchant.revenue}
+    end
+    @revenue_array = revenue_array.sort_by { |hash| -hash.values[0]}
+  end
+
+
 
 end

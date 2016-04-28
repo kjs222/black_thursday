@@ -13,10 +13,6 @@ class Transaction
     @sales_engine = sales_engine
   end
 
-  def add_new(data, sales_engine)
-    transactions << Transaction.new(data, sales_engine)
-  end
-
   def created_at
     Time.parse(@created_at)
   end
